@@ -1,17 +1,36 @@
 import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import App from '@/App'
+import router from '@/router/router'
+import store from '@/store/store'
+import {AXIOS} from '@/api/http-common'
+import Vuetify from 'vuetify'
+import '@babel/polyfill'
+import 'vuetify/dist/vuetify.min.css'
+import 'material-design-icons-iconfont'
 
-Vue.config.productionTip = false
+AXIOS.defaults.withCredentials = true;
+Vue.config.productionTip = false;
+Vue.prototype.$axios = AXIOS;
 
-// Bootstrap
-Vue.use(BootstrapVue)
+AXIOS.interceptors.response.use(response => {
+        return Promise.resolve(response)
+    },
+    error => {
+        if (error.response.status === 401) {
+            console.log('Unauthorized, logging out ...');
+            store.dispatch('userSignOut')
+            router.replace('signIn')
+            return Promise.reject(error)
+        } else {
+            return Promise.reject(error.response);
+        }
+    });
+
+Vue.use(Vuetify);
 
 new Vue({
     router,
+    store,
     render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
 
