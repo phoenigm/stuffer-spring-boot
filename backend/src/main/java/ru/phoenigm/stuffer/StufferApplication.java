@@ -1,4 +1,4 @@
-package ru.phoenigm;
+package ru.phoenigm.stuffer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

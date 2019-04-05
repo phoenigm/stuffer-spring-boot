@@ -86,6 +86,7 @@
 
 <script>
     import {UserService} from "../api/user";
+    import {AXIOS} from '../api/http-common'
 
     const userApi = new UserService();
 
@@ -121,12 +122,11 @@
         },
         methods: {
             register() {
-                userApi.register(this.userForm)
+                AXIOS.post('api/auth/registration', this.userForm)
                     .then(response => {
                         this.serverMessage = null;
                         this.response = response;
                         this.user = response.data.id;
-                        console.log(this.user.id);
 
                         const status = response.status;
                         if (status === 200) {
