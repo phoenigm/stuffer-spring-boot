@@ -14,13 +14,13 @@ public class RegistrationForm {
     @Email(message = "{email.format}")
     private String email;
 
-    @Size(min = 2, max = 50, message = "{firstName.size}")
     @NotBlank(message = "{firstName.blank}")
+    @Size(min = 2, max = 50, message = "{firstName.size}")
     @Pattern(regexp = "^([A-ZА-Я][a-za-я]*)$", message = "{firstName.format}")
     private String firstName;
 
-    @Size(min = 2, max = 60, message = "{lastName.size}")
     @NotBlank(message = "{lastName.blank}")
+    @Size(min = 2, max = 60, message = "{lastName.size}")
     @Pattern(regexp = "^[A-ZА-Я][a-za-я]*$", message = "{lastName.format}")
     private String lastName;
 

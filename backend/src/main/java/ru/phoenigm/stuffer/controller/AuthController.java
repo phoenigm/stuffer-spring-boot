@@ -1,6 +1,5 @@
 package ru.phoenigm.stuffer.controller;
 
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,9 @@ import ru.phoenigm.stuffer.service.UserService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-@Log4j2
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -29,18 +27,21 @@ public class AuthController {
 
     @PostMapping("/registration")
     public ResponseEntity<?> register(@Valid @RequestBody RegistrationForm form, BindingResult result) {
-        log.info(form);
 
         if (result.hasErrors()) {
-            Map<String, String> validationErrors = result.getFieldErrors()
-                    .stream()
-                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            Map<String, String> validationErrors = new HashMap<>();
+
+            for (FieldError error : result.getFieldErrors()) {
+                if (validationErrors.containsKey(error.getField())) {
+                    continue;
+                }
+                validationErrors.put(error.getField(), error.getDefaultMessage());
+            }
 
             return ResponseEntity.badRequest().body(validationErrors);
         }
 
         try {
-            /*return ResponseEntity.ok(userService.register(form));*/
             return ResponseEntity.created(URI.create("/api/profile"))
                     .body(userService.register(form));
         } catch (UserAlreadyExistsException e) {
