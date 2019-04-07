@@ -45,11 +45,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
-
-    @GetMapping("/logout")
-    public ResponseEntity<?> logout() {
-        return null;
-    }
 }
 
 
