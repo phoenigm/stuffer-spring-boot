@@ -3,7 +3,7 @@ import router from '@/router/router'
 import store from '@/store/store'
 
 export const AXIOS = axios.create({
-    baseURL: 'http://phoenigm:phoenigm@localhost:8088',
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://phoenigm:phoenigm@localhost:8088' : 'https://stufffer.herokuapp.com',
     headers: {
         'Access-Control-Allow-Origin': 'http://localhost:8080',
     },
