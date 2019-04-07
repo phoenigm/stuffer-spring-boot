@@ -179,7 +179,8 @@
                 this.$router.push(page);
             },
             logout() {
-                this.$store.dispatch('userSignOut');
+                this.$store.dispatch('logout');
+                this.$router.replace('/login');
             }
         }
     }
