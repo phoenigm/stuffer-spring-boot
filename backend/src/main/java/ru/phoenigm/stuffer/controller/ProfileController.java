@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.phoenigm.stuffer.domain.User;
+import ru.phoenigm.stuffer.payload.Profile;
 
 import java.security.Principal;
 
@@ -19,9 +21,10 @@ public class ProfileController {
     private UserDetailsService userDetailsService;
 
     @GetMapping("/profile")
-    public UserDetails profile(Principal principal) {
+    public Profile profile(Principal principal) {
+        User user = (User) userDetailsService.loadUserByUsername(principal.getName());
 
-        return userDetailsService.loadUserByUsername(principal.getName());
+        return Profile.fromUser(user);
     }
 
 }
