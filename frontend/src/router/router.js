@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '../store/store'
+import store from '@/store/store'
 
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
@@ -18,7 +18,6 @@ import Help from '@/pages/Help'
 import User from '@/pages/User'
 import LeaderBoard from '@/pages/LeaderBoard'
 
-
 Vue.use(Router);
 
 const router = new Router({
@@ -34,13 +33,12 @@ const router = new Router({
             path: '/profile',
             name: 'Profile',
             component: Profile,
-            meta: {nonRequiresAuth: false}
         },
         {
             path: '/login',
             name: 'Login',
             component: Login,
-            meta: {loginPage: true, nonRequiresAuth: true}
+            meta: {nonRequiresAuth: true}
         },
         {
             path: '/registration',
@@ -75,13 +73,11 @@ const router = new Router({
             path: '/friends',
             name: 'Friends',
             component: Friends,
-            meta: {nonRequiresAuth: false}
         },
         {
             path: '/messages',
             name: 'Messages',
             component: Messages,
-            meta: {nonRequiresAuth: false}
         },
         {
             path: '/help',
@@ -112,15 +108,17 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-    const requiresAuth = !to.matched.some(record => record.meta.nonRequiresAuth)
-    const isLoginPage = to.matched.some(record => record.meta.loginPage)
-    const isAuthenticated = store.getters.isAuthenticated;
+    const requiresAuth = !to.matched.some(record => record.meta.nonRequiresAuth);
+    const isAuthenticated = store.getters['isAuthenticated'];
+
+    console.log('require auth: ' + requiresAuth + '\nis auth:  ' + isAuthenticated);
     if (requiresAuth && !isAuthenticated) {
         next('/login')
-    } else if (isLoginPage && isAuthenticated) {
-        router.push('/profile')
+    } else if (!requiresAuth && isAuthenticated) {
+        next('/profile')
+    } else {
+        next()
     }
-    next()
 });
 
 export default router
