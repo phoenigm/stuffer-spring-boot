@@ -31,7 +31,6 @@
                         <v-autocomplete
                                 :disabled="!isEditing"
                                 :items="states"
-                                :filter="customFilter"
                                 color="white"
                                 item-text="name"
                                 label="State"
@@ -43,7 +42,7 @@
                         <v-btn
                                 :disabled="!isEditing"
                                 color="success"
-                                @click="save"
+                                @click=""
                         >
                             Save
                         </v-btn>
@@ -78,6 +77,7 @@
                     name: 'John',
                     pictureURL: 'https://cdn.vuetifyjs.com/images/john.jpg'
                 },
+                states: [],
                 hasSaved: false,
                 isEditing: null,
                 model: null,
@@ -89,13 +89,10 @@
         mounted() {
             AXIOS.get('/api/profile')
                 .then(response => {
-                    console.log(response.data);
-                    const user = response.data;
-                    this.$store.commit('setUser', user);
-                    console.log(this.$store.state.user)
-
+                    this.$store.commit('setUser', response.data);
                 }).catch(error => {
-                console.log('Profile error:' + JSON.stringify(error))
+                console.log(error);
+                this.$store.dispatch('logout');
             })
         }
     }

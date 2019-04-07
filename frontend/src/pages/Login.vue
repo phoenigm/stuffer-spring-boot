@@ -10,6 +10,12 @@
                             <v-spacer></v-spacer>
                         </v-toolbar>
                         <v-card-text>
+                            <v-alert
+                                    :value="!!serverMessage"
+                                    type="error"
+                            >
+                                {{serverMessage}}
+                            </v-alert>
                             <v-form>
                                 <v-text-field v-model="loginForm.email" prepend-icon="person" name="login"
                                               label="Login"
@@ -31,9 +37,8 @@
 </template>
 
 <script>
-    import {UserService} from "../api/user";
+    import {AXIOS} from "../api/http-common";
 
-    const userApi = new UserService();
 
     export default {
         name: "Login",
@@ -43,7 +48,8 @@
                 loginForm: {
                     email: null,
                     password: null
-                }
+                },
+                serverMessage: null
             }
         },
 
@@ -53,7 +59,33 @@
         },
         methods: {
             login() {
-                this.$store.dispatch('userSignIn', this.loginForm)
+                const form = new FormData();
+                form.append('grant_type', 'password');
+                form.append('username', this.loginForm.email);
+                form.append('password', this.loginForm.password);
+
+                AXIOS.post('/oauth/token', form)
+                    .then(response => {
+                        const token = response.data['access_token'];
+                        console.log(token);
+
+                        localStorage.setItem('token', token);
+                        this.$store.commit('setToken', token);
+
+                        if (response.status === 200) {
+                            this.$router.push('/profile');
+                        }
+                    })
+                    .catch(error => {
+                        if (error.status === 400 ) {
+                            this.serverMessage = error.data['error_description'];
+                        }
+                        console.log( 'login error');
+                        console.log(error);
+                        console.log(error.data);
+                        this.$store.dispatch('logout');
+                    });
+
             }
         }
     }
