@@ -1,9 +1,6 @@
 package ru.phoenigm.stuffer.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -18,6 +16,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "publishedTrips")
 @Table(name = "service_user")
 public class User implements UserDetails {
     @Id
@@ -35,6 +34,9 @@ public class User implements UserDetails {
 
     private LocalDateTime registrationDate;
     private LocalDateTime lastVisit;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private Set<Trip> publishedTrips;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

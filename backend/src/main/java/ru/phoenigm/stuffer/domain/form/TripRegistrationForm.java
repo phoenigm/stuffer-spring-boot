@@ -1,26 +1,18 @@
-package ru.phoenigm.stuffer.domain;
+package ru.phoenigm.stuffer.domain.form;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
-public class Trip {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class TripRegistrationForm {
 
-    @ManyToOne
-    @JoinColumn
-    private User author;
-
-    private LocalDateTime publicationDate;
     private LocalDateTime arrivalDate;
     private LocalDateTime departureDate;
 
@@ -29,5 +21,4 @@ public class Trip {
 
     private Long price;
     private String info;
-
 }
