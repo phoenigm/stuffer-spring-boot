@@ -3,7 +3,7 @@ import router from '@/router/router'
 import store from '@/store/store'
 
 export const AXIOS = axios.create({
-    baseURL: process.env.VUE_APP_ROOT_API,
+    baseURL: 'http://phoenigm:phoenigm@localhost:8088',
     headers: {
         'Access-Control-Allow-Origin': 'http://localhost:8080',
     },
