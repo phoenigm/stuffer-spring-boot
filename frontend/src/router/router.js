@@ -17,6 +17,7 @@ import Settings from '@/pages/Settings'
 import Help from '@/pages/Help'
 import User from '@/pages/User'
 import LeaderBoard from '@/pages/LeaderBoard'
+import NotFoundPage from '@/pages/NotFoundPage'
 
 Vue.use(Router);
 
@@ -47,7 +48,7 @@ const router = new Router({
             meta: {nonRequiresAuth: true}
         },
         {
-            path: '/challenge/:challengeId',
+            path: '/trip/:challengeId',
             name: 'Challenge',
             component: Challenge,
             meta: {title: "Challenge"}
@@ -90,20 +91,17 @@ const router = new Router({
             component: Settings
         },
         {
-            path: '/battle',
-            name: 'BattleCry',
-            component: BattleCry
-        },
-        {
-            path: '/user/:username',
+            path: '/user/:userId',
             name: 'User',
-            component: User
+            component: User,
+            props: true
         },
         {
-            path: '/leaderboard',
-            name: 'LeaderBoard',
-            component: LeaderBoard
-        },
+            path: '/404',
+            name: 'NotFoundPage',
+            component: NotFoundPage
+        }
+
     ]
 });
 
