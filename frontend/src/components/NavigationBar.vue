@@ -49,13 +49,18 @@
         </v-navigation-drawer>
         <v-toolbar color="amber" fixed app clipped-left>
             <v-toolbar-side-icon @click.native="drawer = !drawer"></v-toolbar-side-icon>
-            <span class="title ml-3 mr-5">Challenger&nbsp;<span class="text">Keep</span></span>
-            <v-text-field
-                    solo-inverted
-                    flat
-                    label="Search"
-                    prepend-icon="search"
-            ></v-text-field>
+            <span class="title ml-3 mr-5">Stuffer&nbsp;<span class="text"></span></span>
+            <v-layout align-center justify-center row fill-height>
+                <v-flex>
+                    <v-text-field
+                            solo-inverted
+                            flat
+                            label="Search"
+                            prepend-icon="search"
+                    ></v-text-field>
+                </v-flex>
+            </v-layout>
+
             <v-spacer></v-spacer>
 
             <v-menu
@@ -130,20 +135,16 @@
                 items: [
                     {heading: 'Personal'},
                     {icon: 'fas fa-user', text: 'Profile', page: '/profile'},
-                    {icon: 'fas fa-user-friends', text: 'Friends', page: '/friends'},
                     {icon: 'fas fa-comments', text: 'Messages', page: '/messages'},
                     {divider: true},
                     {heading: 'Activity'},
-                    {icon: 'fas fa-fist-raised', text: 'My challenges', page: '/challenges'},
-                    {icon: 'fas fa-stream', text: 'All challenges', page: '/catalogue'},
-                    {icon: 'fas fa-universal-access', text: 'Battle cry [soon]', page: '/battle'},
-                    {icon: 'fas fa-plus', text: 'Create new challenge', page: '/new'},
-                    {divider: true},
-                    {heading: 'Community'},
-                    {icon: 'fas fa-users', text: 'Leaderboard', page: '/leaderboard'},
+                    {icon: 'fas fa-fist-raised', text: 'My orders', page: '/challenges'},
+                    {icon: 'fas fa-stream', text: 'Search', page: '/catalogue'},
+                    {icon: 'fas fa-plus', text: 'Add new trip', page: '/new'},
                     {divider: true},
                     {icon: 'fas fa-cog', text: 'Settings', page: '/settings'},
                     {icon: 'fas fa-question-circle', text: 'Help', page: '/help'},
+                    {icon: 'fas fa-sign-out-alt', text: 'Quit', page: '/help'},
                 ],
 
                 user: this.$store.getters.getUser,
