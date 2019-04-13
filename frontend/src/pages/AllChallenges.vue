@@ -7,7 +7,7 @@
                 <v-container fluid grid-list-sm>
                     <v-layout row wrap>
 
-                        <v-flex v-for="i in 31" :key="i" xs12 sm6 md4 lg3>
+                        <v-flex v-for="i in 3" :key="i" xs12>
                             <ChallengeCard/>
                         </v-flex>
                     </v-layout>
