@@ -5,33 +5,37 @@
         <v-content>
             <v-container>
                 <v-layout row>
-                    <v-flex xs4>
+                    <v-flex xs4 mr-3>
                         <v-layout column>
                             <v-flex>
                                 <v-avatar
                                         :tile="true"
-                                        :size="340"
+                                        :size="370"
                                         color="yellow lighten-4"
                                 >
                                     <img src="https://pp.userapi.com/c848536/v848536366/131886/EYolGIZVWhg.jpg"
                                          alt="avatar">
                                 </v-avatar>
+                            </v-flex>
+
+                            <v-flex my-3>
                                 <v-btn
                                         :loading="uploadAvatar"
                                         :disabled="uploadAvatar"
                                         color="purple"
+                                        block
                                         class="white--text"
                                         @click="loader = 'uploadAvatar'"
                                 >
                                     Upload avatar
                                 </v-btn>
                             </v-flex>
+
                             <v-flex>
                                 <v-card
                                         class="hide-overflow"
                                         color="purple lighten-1"
                                         dark
-                                        max-width="340"
                                 >
                                     <v-toolbar
                                             card
@@ -78,7 +82,7 @@
 
                     <v-flex xs8>
                         <v-layout column>
-                            <v-flex mb-3>
+                            <v-flex >
                                 <v-card
                                         class="hide-overflow"
                                         color="purple lighten-1"
@@ -162,7 +166,7 @@
 
                                     </v-card-text>
                                     <v-divider></v-divider>
-                                    <v-card-actions>
+                                    <v-card-actions :class="isEditing ? '' : 'hidden-sm-and-up'">
                                         <v-spacer></v-spacer>
                                         <v-btn
                                                 :disabled="!isEditing"
@@ -184,6 +188,43 @@
                                 </v-card>
                             </v-flex>
 
+                            <v-flex mb-3>
+                                <v-card
+                                        class="hide-overflow"
+                                        color="purple lighten-1"
+                                        dark
+                                >
+                                    <v-card-text>
+                                        <v-layout align-center justify-center row wrap>
+                                            <v-flex>
+                                                Driver rating:
+                                                <span class="grey--text text--lighten-2 caption mr-2">{{ rating }}</span>
+                                                <v-rating
+                                                        v-model="rating"
+                                                        background-color="white"
+                                                        color="yellow accent-4"
+                                                        dense
+                                                        half-increments
+                                                        hover
+                                                        size="18"
+                                                ></v-rating>
+                                            </v-flex>
+                                            <v-flex shrink class="text-xs-center mx-3" v-for="stat in statistics">
+                                                <v-layout column fill-height>
+                                                    <v-flex class="headline">
+                                                        {{stat.value}}
+                                                    </v-flex>
+                                                    <v-flex class="body-2">
+                                                        {{stat.title}}
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card-text>
+                                    <v-divider></v-divider>
+                                </v-card>
+                            </v-flex>
+
                             <v-flex>
                                 <v-card
                                         class="hide-overflow"
@@ -195,58 +236,48 @@
                                             color="purple"
                                     >
                                         <v-icon>mdi-account</v-icon>
-                                        <v-toolbar-title class="font-weight-light">Activity</v-toolbar-title>
+                                        <v-toolbar-title class="font-weight-light">Trips</v-toolbar-title>
                                     </v-toolbar>
                                     <v-card-text>
-                                        <v-layout row subheading>
-                                            <v-flex md6 offset-xs1>
-                                                <v-layout column>
-                                                    <v-flex my-2>
-                                                        Driver rating:
-                                                        <span class="grey--text text--lighten-2 caption mr-2">{{ rating }}</span>
-                                                        <v-rating
-                                                                v-model="rating"
-                                                                background-color="white"
-                                                                color="yellow accent-4"
-                                                                dense
-                                                                half-increments
-                                                                hover
-                                                                size="18"
-                                                        ></v-rating>
-                                                    </v-flex>
+                                        <v-layout column subheading>
+                                            <v-flex xs12 my-1 v-for="i in 3" >
+                                                <v-card
+                                                        color="purple"
+                                                >
+                                                    <v-card-title>
+                                                        <v-layout justify-center>
+                                                            <span class="title font-weight-light">Уфа - Казань</span>
+                                                        </v-layout>
+                                                    </v-card-title>
 
-                                                    <v-flex my-2>
-                                                        Last trip rating:
-                                                        <span class="grey--text text--lighten-2 caption mr-2">{{ rating }}</span>
-                                                        <v-rating
-                                                                v-model="rating"
-                                                                background-color="white"
-                                                                color="yellow accent-4"
-                                                                dense
-                                                                half-increments
-                                                                hover
-                                                                size="18"
-                                                        ></v-rating>
-                                                    </v-flex>
+                                                    <v-card-text class="subheading font-weight-bold">
 
-                                                    <v-flex my-2>
-                                                        Last trip: 20.03.2019
-                                                    </v-flex>
+                                                        <v-layout row>
+                                                            <v-flex>
+                                                                <v-layout column>
+                                                                    <v-flex>
+                                                                        <span>Delivery date:  23-03-2019 20:00</span>
+                                                                    </v-flex>
+                                                                    <v-flex>
+                                                                        <span>Delivery date:  23-03-2019 20:00</span>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                            </v-flex>
 
-                                                    <v-flex my-2>
-                                                        Number of trips: 6
-                                                    </v-flex>
+                                                            <v-flex>
+                                                                <v-layout column>
+                                                                    <v-flex>
+                                                                        <span>From: Башкортостан, г Уфа, ул Первомайская, 49</span>
+                                                                    </v-flex>
+                                                                    <v-flex>
+                                                                        <span>To: Татарстан, г Казань, ул  Пушкина, 32</span>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                            </v-flex>
+                                                        </v-layout>
 
-                                                    <v-flex my-2>
-                                                        Number of reviews: 6
-                                                    </v-flex>
-                                                </v-layout>
-                                            </v-flex>
-
-                                            <v-flex md6>
-                                                <v-layout column>
-
-                                                </v-layout>
+                                                    </v-card-text>
+                                                </v-card>
                                             </v-flex>
 
                                         </v-layout>
@@ -308,6 +339,12 @@
                     password: null,
                     confirmedPassword: null,
                 },
+
+                statistics: [
+                    {title: 'Total trips', value: 2, icon: ''},
+                    {title: 'Last trip', value: '20.12.2018', icon: ''},
+                    {title: 'Reviews', value: 2, icon: ''},
+                ],
 
                 updateProfileMessage: '',
             }
