@@ -1,15 +1,14 @@
 package ru.phoenigm.stuffer.domain.form;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.phoenigm.stuffer.domain.Trip;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TripRegistrationForm {
+public class TripUpdateForm {
     private String arrivalDate;
     private String departureDate;
 
@@ -18,4 +17,6 @@ public class TripRegistrationForm {
 
     private Integer price;
     private String info;
+
+    private Trip.TripStatus status;
 }
