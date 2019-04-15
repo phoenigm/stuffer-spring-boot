@@ -1,4 +1,7 @@
 package ru.phoenigm.stuffer.repository;
 
-public class ReviewRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.phoenigm.stuffer.domain.Review;
+
+public interface ReviewRepository extends JpaRepository<Review, Long> {
 }
