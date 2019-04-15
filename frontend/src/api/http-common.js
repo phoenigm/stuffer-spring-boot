@@ -7,7 +7,6 @@ export const AXIOS = axios.create({
     headers: {
         'Access-Control-Allow-Origin': 'http://localhost:8080',
     },
-    withCredentials: true
 });
 
 AXIOS.interceptors.request.use(function (config) {

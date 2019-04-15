@@ -14,10 +14,10 @@
                 <v-flex>
                     <v-layout column>
                         <v-flex>
-                            <span>Delivery date:  23-03-2019 20:00</span>
+                            <span>Departure date:  {{ trip.departureDate }}</span>
                         </v-flex>
                         <v-flex>
-                            <span>Delivery date:  23-03-2019 20:00</span>
+                            <span>Arrival date:  {{ trip.arrivalDate }}</span>
                         </v-flex>
                     </v-layout>
                 </v-flex>
@@ -25,10 +25,10 @@
                 <v-flex>
                     <v-layout column>
                         <v-flex>
-                            <span>From: Башкортостан, г Уфа, ул Первомайская, 49</span>
+                            <span>From: {{ trip.departurePoint }}</span>
                         </v-flex>
                         <v-flex>
-                            <span>To: Татарстан, г Казань, ул  Пушкина, 32</span>
+                            <span>To: {{trip.deliveryPoint}}</span>
                         </v-flex>
                     </v-layout>
                 </v-flex>
@@ -62,27 +62,7 @@
 <script>
     export default {
         name: "ChallengeCard",
-        data() {
-            return {
-                trip: {
-                    author: 'phoenigm',
-                    avatar: 'https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light',
-                    name: 'Pull-ups',
-                    description: 'I want to learn to pull up 15 times in 3 months',
-                    tags: [
-                        {name: 'Sport', color: 'red'},
-                        {name: 'Willpower', color: 'blue'},
-                        {name: 'Training', color: 'green'},
-                    ],
-                    deadline: '04-01-2019',
-                    participants: [
-                        {username: ' a', avatar: 'https://randomuser.me/api/portraits/men/30.jpg'},
-                        {username: ' b', avatar: 'https://randomuser.me/api/portraits/men/31.jpg'},
-                        {username: ' c', avatar: 'https://randomuser.me/api/portraits/men/35.jpg'}
-                    ]
-                }
-            }
-        }
+        props: ['trip'],
     }
 </script>
 

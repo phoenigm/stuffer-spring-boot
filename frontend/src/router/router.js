@@ -6,17 +6,13 @@ import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Profile from '@/pages/Profile'
 import Registration from '@/pages/Registration'
-import Challenge from '@/pages/Challenge'
-import AllChallenges from '@/pages/AllChallenges'
-import MyChallenges from '@/pages/MyChallenges'
-import NewChallenge from '@/pages/NewChallenge'
-import Friends from '@/pages/Friends'
+import Trip from '@/pages/Trip'
+import AllTrips from '@/pages/AllTrips'
+import MyTrips from '@/pages/MyTrips'
+import NewTrip from '@/pages/NewTrip'
 import Messages from '@/pages/Messages'
-import BattleCry from '@/pages/BattleCry'
 import Settings from '@/pages/Settings'
-import Help from '@/pages/Help'
 import User from '@/pages/User'
-import LeaderBoard from '@/pages/LeaderBoard'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 Vue.use(Router);
@@ -48,42 +44,33 @@ const router = new Router({
             meta: {nonRequiresAuth: true}
         },
         {
-            path: '/trip/:challengeId',
-            name: 'Challenge',
-            component: Challenge,
-            meta: {title: "Challenge"}
+            path: '/trip/:tripId',
+            name: 'Trip',
+            component: Trip,
+            meta: {title: "Trip"},
+            props: true
         },
         {
             path: '/catalogue',
-            name: 'AllChallenges',
-            component: AllChallenges,
+            name: 'AllTrips',
+            component: AllTrips,
             meta: {title: "Catalogue"}
         },
         {
-            path: '/challenges',
-            name: 'MyChallenges',
-            component: MyChallenges,
-            meta: {title: "My challenges"}
+            path: '/trips',
+            name: 'MyTrips',
+            component: MyTrips,
+            meta: {title: "MyTrips"}
         },
         {
             path: '/new',
-            name: 'NewChallenge',
-            component: NewChallenge
-        },
-        {
-            path: '/friends',
-            name: 'Friends',
-            component: Friends,
+            name: 'NewTrip',
+            component: NewTrip
         },
         {
             path: '/messages',
             name: 'Messages',
             component: Messages,
-        },
-        {
-            path: '/help',
-            name: 'Help',
-            component: Help
         },
         {
             path: '/settings',

@@ -6,12 +6,14 @@ Vue.use(Vuex);
 let store = new Vuex.Store({
     state: {
         token: localStorage.getItem('token') || '',
-        user: {}
+        user: {},
+        trips: []
     },
     getters: {
         isAuthenticated: state => !!state.token,
         getUser: state => state.user,
-        token: state => state.token
+        token: state => state.token,
+        getTrips: state => state.trips
     },
     mutations: {
         setUser(state, payload) {
@@ -20,10 +22,13 @@ let store = new Vuex.Store({
         setToken(state, payload) {
             state.token = payload;
         },
+        setTrips(state, payload) {
+            state.trips = payload
+        },
         clearToken(state) {
             state.token = '';
             localStorage.removeItem('token')
-        }
+        },
     },
     actions: {
         logout({commit}) {
