@@ -9,6 +9,7 @@ import ru.phoenigm.stuffer.domain.form.TripRegistrationForm;
 import ru.phoenigm.stuffer.service.TripService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/trip")
@@ -16,9 +17,12 @@ public class TripController {
     @Autowired
     private TripService tripService;
 
-    @GetMapping
-    public Trip trip(@RequestParam("id") Long id) {
-        return tripService.getById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Trip> trip(@PathVariable Long id) {
+        Optional<Trip> tripCandidate = tripService.getById(id);
+        return tripCandidate.isPresent() ?
+                ResponseEntity.ok(tripCandidate.get())
+                : ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -26,8 +30,8 @@ public class TripController {
         return tripService.save(form);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteTrip(@RequestParam("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTrip(@PathVariable Long id) {
         try {
             tripService.deleteById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
