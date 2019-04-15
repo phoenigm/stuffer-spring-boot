@@ -13,8 +13,15 @@
                                         <v-flex xs12 text-xs-center>
                                             <span class="display-3 ">Create new trip</span>
                                         </v-flex>
+                                        <v-flex>
+                                            <v-text-field
+                                                    v-model="tripForm.departurePoint"
+                                                    box
+                                                    color="blue-grey lighten-2"
+                                                    label="Departure point"
+                                            ></v-text-field>
+                                        </v-flex>
                                         <v-flex xs12>
-
                                             <v-text-field
                                                     v-model="tripForm.deliveryPoint"
                                                     box
@@ -23,14 +30,6 @@
                                             ></v-text-field>
 
 
-                                        </v-flex>
-                                        <v-flex>
-                                            <v-text-field
-                                                    v-model="tripForm.departurePoint"
-                                                    box
-                                                    color="blue-grey lighten-2"
-                                                    label="Departure point"
-                                            ></v-text-field>
                                         </v-flex>
                                         <v-flex xs12>
                                             <v-textarea
@@ -77,12 +76,14 @@
                                                                     v-on="on"
                                                             ></v-text-field>
                                                         </template>
-                                                        <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+                                                        <v-date-picker v-model="date"
+                                                                       @input="menu2 = false"></v-date-picker>
                                                     </v-menu>
                                                 </v-flex>
 
                                                 <v-flex>
-                                                    <v-text-field v-model="tripForm.departureTime" mask="time" label="Departure time"></v-text-field>
+                                                    <v-text-field v-model="tripForm.departureTime" mask="time"
+                                                                  label="Departure time"></v-text-field>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -110,12 +111,14 @@
                                                                     v-on="on"
                                                             ></v-text-field>
                                                         </template>
-                                                        <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+                                                        <v-date-picker v-model="date"
+                                                                       @input="menu2 = false"></v-date-picker>
                                                     </v-menu>
                                                 </v-flex>
 
                                                 <v-flex>
-                                                    <v-text-field v-model="tripForm.arrivalTime" mask="time" label="Arrival time"></v-text-field>
+                                                    <v-text-field v-model="tripForm.arrivalTime" mask="time"
+                                                                  label="Arrival time"></v-text-field>
                                                 </v-flex>
                                             </v-layout>
                                         </v-flex>
@@ -145,6 +148,7 @@
 
 <script>
     import NavigationBar from "../components/NavigationBar";
+    import {AXIOS} from "../api/http-common";
 
     export default {
         name: "NewChallenge",
@@ -156,18 +160,20 @@
                 3: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
                 4: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
                 5: 'https://cdn.vuetifyjs.com/images/lists/5.jpg'
-            }
+            };
             return {
                 tripForm: {
                     info: null,
                     arrivalDate: new Date().toISOString().substr(0, 10),
-                    arrivalTime: new Date().getHours() + 6  + ':' + new Date().getMinutes(),
+                    arrivalTime: '2359',
                     departureDate: new Date().toISOString().substr(0, 10),
-                    departureTime: new Date().getHours() + ':' + new Date().getMinutes(),
+                    departureTime: new Date().getHours() > 9 ? '' : '0' + new Date().getHours() + '' + new Date().getMinutes(),
                     departurePoint: null,
                     deliveryPoint: null,
                     price: null
                 },
+
+                serverErrorMessage: null,
 
                 date: new Date().toISOString().substr(0, 10),
                 menu: false,
@@ -179,19 +185,6 @@
                 friends: ['Sandra Adams', 'Britta Holt'],
                 isUpdating: false,
                 name: 'Midnight Crew',
-                people: [
-                    {header: 'Group 1'},
-                    {name: 'Sandra Adams', group: 'Group 1', avatar: srcs[1]},
-                    {name: 'Ali Connors', group: 'Group 1', avatar: srcs[2]},
-                    {name: 'Trevor Hansen', group: 'Group 1', avatar: srcs[3]},
-                    {name: 'Tucker Smith', group: 'Group 1', avatar: srcs[2]},
-                    {divider: true},
-                    {header: 'Group 2'},
-                    {name: 'Britta Holt', group: 'Group 2', avatar: srcs[4]},
-                    {name: 'Jane Smith ', group: 'Group 2', avatar: srcs[5]},
-                    {name: 'John Smith', group: 'Group 2', avatar: srcs[1]},
-                    {name: 'Sandra Williams', group: 'Group 2', avatar: srcs[3]}
-                ],
                 title: 'The summer breeze'
             }
         },
@@ -209,7 +202,27 @@
             },
 
             createTrip() {
-                console.log(this.tripForm);
+                const form = {
+                    info: this.tripForm.info,
+                    arrivalDate: this.tripForm.arrivalDate
+                        + ' ' + this.tripForm.arrivalTime.substr(0, 2)
+                        + ':' + this.tripForm.arrivalTime.substr(2, 4),
+                    departureDate: this.tripForm.departureDate
+                        + ' ' + this.tripForm.departureTime.substr(0, 2)
+                        + ':' + this.tripForm.departureTime.substr(2, 4),
+                    departurePoint: this.tripForm.departurePoint,
+                    deliveryPoint: this.tripForm.deliveryPoint,
+                    price: this.tripForm.price
+                };
+                AXIOS.post('/api/trip', form)
+                    .then(response => {
+                        const trip = response.data;
+                        console.log(response.data);
+                        this.$router.push('/trip/' + trip.id);
+                    }).catch(error => {
+                    console.log(error)
+                })
+
             },
 
         },

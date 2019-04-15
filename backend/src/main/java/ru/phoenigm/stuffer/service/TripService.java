@@ -4,15 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.phoenigm.stuffer.domain.Trip;
 import ru.phoenigm.stuffer.domain.User;
 import ru.phoenigm.stuffer.domain.form.TripRegistrationForm;
 import ru.phoenigm.stuffer.repository.TripRepository;
-import ru.phoenigm.stuffer.repository.UserRepository;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TripService {
@@ -31,13 +33,15 @@ public class TripService {
         return tripRepository.getTripsByDepartureDate(departureDate);
     }
 
+    @Transactional
     public Trip save(TripRegistrationForm registrationForm) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) userDetailsService.loadUserByUsername(principal.getName());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         Trip trip = Trip.builder()
-                .arrivalDate(registrationForm.getArrivalDate())
-                .departureDate(registrationForm.getDepartureDate())
+                .arrivalDate(LocalDateTime.parse(registrationForm.getArrivalDate(), formatter))
+                .departureDate(LocalDateTime.parse(registrationForm.getDepartureDate(), formatter))
                 .departurePoint(registrationForm.getDeparturePoint())
                 .deliveryPoint(registrationForm.getDeliveryPoint())
                 .price(registrationForm.getPrice())
@@ -49,8 +53,8 @@ public class TripService {
         return tripRepository.save(trip);
     }
 
-    public Trip getById(Long id) {
-        return tripRepository.getOne(id);
+    public Optional<Trip> getById(Long id) {
+        return tripRepository.findById(id);
     }
 
     public void deleteById(Long id) {

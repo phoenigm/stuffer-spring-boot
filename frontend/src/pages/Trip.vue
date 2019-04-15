@@ -23,16 +23,16 @@
                                     <v-flex>
                                         <v-layout column>
                                             <v-flex my-2>
-                                                <span>Delivery date:  23-03-2019 20:00</span>
+                                                <span>Departure date:  {{trip.departureDate}}</span>
                                             </v-flex>
                                             <v-flex my-2>
-                                                <span>Delivery date:  23-03-2019 20:00</span>
+                                                <span>Arrival date:  {{trip.arrivalDate}}</span>
                                             </v-flex>
                                             <v-flex my-2>
-                                                <span>From: Башкортостан, г Уфа, ул Первомайская, 49</span>
+                                                <span>From:  {{trip.departurePoint}}</span>
                                             </v-flex>
                                             <v-flex my-2>
-                                                <span>To: Татарстан, г Казань, ул  Пушкина, 32</span>
+                                                <span>To: {{trip.deliveryPoint}}</span>
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
@@ -45,7 +45,7 @@
                                     <v-flex my-2>
                                         <span>
                                             <v-icon>fas fa-money-bill-wave</v-icon>
-                                            Price: 1000
+                                            Price: {{ trip.price }}
                                         </span>
 
                                     </v-flex>
@@ -59,12 +59,7 @@
                                                 Description
                                             </v-card-title>
                                             <v-card-text>
-                                                Lorem ipsum dolor sit amet, brute iriure accusata ne mea. Eos suavitate
-                                                referrentur ad, te duo agam libris qualisque, utroque quaestio
-                                                accommodare no qui. Et percipit laboramus usu, no invidunt verterem
-                                                nominati mel. Dolorem ancillae an mei, ut putant invenire splendide mel,
-                                                ea nec propriae adipisci. Ignota salutandi accusamus in sed, et per
-                                                malis fuisset, qui id ludus appareat.
+                                                {{ trip.info }}
                                             </v-card-text>
                                         </v-card>
                                     </v-flex>
@@ -92,7 +87,7 @@
                                 <div class="text-sm-center mb-2">
 
                                 <span class="headline">
-                                    Azat Mukhametzyanov
+                                    {{trip.author.firstName}} {{trip.author.lastName}}
                                 </span>
                                 </div>
                                 <v-layout row>
@@ -110,7 +105,7 @@
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
-                                    <v-flex>
+                                    <v-flex ml-2>
                                         <v-layout>
                                             <v-layout column>
 
@@ -121,6 +116,7 @@
                                                             v-model="rating"
                                                             background-color="white"
                                                             color="yellow accent-4"
+                                                            readonly="true"
                                                             dense
                                                             half-increments
                                                             hover
@@ -128,19 +124,6 @@
                                                     ></v-rating>
                                                 </v-flex>
 
-                                                <v-flex my-2>
-                                                    Last trip rating:
-                                                    <span class="grey--text text--lighten-2 caption mr-2">{{ rating }}</span>
-                                                    <v-rating
-                                                            v-model="rating"
-                                                            background-color="white"
-                                                            color="yellow accent-4"
-                                                            dense
-                                                            half-increments
-                                                            hover
-                                                            size="18"
-                                                    ></v-rating>
-                                                </v-flex>
 
                                                 <v-flex my-2>
                                                     Last trip: 20.03.2019
@@ -153,6 +136,15 @@
                                                 <v-flex my-2>
                                                     Number of reviews: 6
                                                 </v-flex>
+
+                                                <v-flex my-2>
+                                                    Email: {{ trip.author.email}}
+                                                </v-flex>
+
+                                                <v-flex my-2>
+                                                    Phone number: {{ trip.author.phoneNumber}}
+                                                </v-flex>
+
                                             </v-layout>
                                         </v-layout>
                                     </v-flex>
@@ -162,8 +154,11 @@
                             <v-divider></v-divider>
                             <v-card-actions>
                                 <v-spacer/>
-                                <span class="text-sm-center subheading mr-2">Go to profile</span>
-                                <v-icon> fas fa-angle-right</v-icon>
+                                <router-link class="" tag="v-btn" :to="'/user/' + trip.author.id" >
+                                    Go to profile
+                                    <v-icon> fas fa-angle-right</v-icon>
+                                </router-link>
+
                             </v-card-actions>
                         </v-card>
                     </v-flex>
@@ -177,10 +172,14 @@
 
 <script>
     import NavigationBar from "../components/NavigationBar";
+    import {AXIOS} from "../api/http-common";
 
     export default {
         name: "Challenge",
         components: {NavigationBar},
+        props: {
+            disabled: Boolean,
+        },
 
         data() {
             return {
@@ -190,23 +189,21 @@
                 rating: 4.11,
                 numberOfTrips: 0,
 
-                user: this.$store.getters['getUser'],
-
-                loader: null,
-                uploadAvatar: false,
+                challenge: null,
 
 
-                updateProfileForm: {
-                    firstName: null,
-                    lastName: null,
-                    email: null,
-                    phoneNumber: null,
-                    password: null,
-                    confirmedPassword: null,
-                },
-
-                updateProfileMessage: '',
+                trip: {}
             }
+        },
+
+        mounted() {
+            AXIOS.get('/api/trip/' + this.$route.params.tripId)
+                .then(response => {
+                    console.log(response.data);
+                    this.trip = response.data;
+                }).catch(error => {
+                console.log(error)
+            })
         }
     }
 </script>
