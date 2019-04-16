@@ -115,8 +115,8 @@
             <v-btn icon large @click="logout">
                 <v-avatar size="32px">
                     <img
-                            :src="user.pictureURL != null ? user.pictureURL : 'https://cdn.vuetifyjs.com/images/john.jpg'"
-                            :alt="user.username"
+                            :src="user.avatarUrl"
+                            :alt="user.firstName"
                     >
                 </v-avatar>
             </v-btn>
@@ -146,7 +146,7 @@
                     {icon: 'fas fa-sign-out-alt', text: 'Quit', page: '/quit'},
                 ],
 
-                user: this.$store.getters.getUser,
+                user: this.$store.getters['getUser'],
 
                 notifications: [
                     {header: 'Today'},

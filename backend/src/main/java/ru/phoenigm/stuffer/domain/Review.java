@@ -1,5 +1,7 @@
 package ru.phoenigm.stuffer.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +26,7 @@ public class Review {
     private User reviewer;
 
     @ManyToOne
+
     @JoinColumn(name = "driver_id")
     private User driver;
 

@@ -1,14 +1,16 @@
 <template>
+    <router-link tag="a" style="text-decoration: none" :to="'/trip/' + trip.id">
+
     <v-card
-            color="purple lighten-1"
+            :color="color"
     >
         <v-card-title>
             <v-layout justify-center>
-                <span class="title font-weight-light">Уфа - Казань</span>
+                <span class="title font-weight-light">{{trip.departurePoint.split(',')[0]}} - {{trip.deliveryPoint.split(',')[0]}}</span>
             </v-layout>
         </v-card-title>
 
-        <v-card-text class="headline font-weight-bold">
+        <v-card-text class=" font-weight-bold" :class="text">
 
             <v-layout row>
                 <v-flex>
@@ -39,17 +41,17 @@
 
         <v-divider light></v-divider>
 
-        <v-card-actions>
+        <v-card-actions v-if="author">
             <v-list-tile class="grow">
                 <v-list-tile-avatar color="grey darken-3">
                     <v-img
                             class="elevation-5"
-                            :src=trip.avatar
+                            :src=author.avatarUrl
                     ></v-img>
                 </v-list-tile-avatar>
 
                 <v-list-tile-content>
-                    <v-list-tile-title>Азат Мухаметзянов</v-list-tile-title>
+                    <v-list-tile-title>{{author.firstName}} {{author.lastName}}</v-list-tile-title>
                 </v-list-tile-content>
 
             </v-list-tile>
@@ -57,12 +59,13 @@
 
         </v-card-actions>
     </v-card>
+    </router-link>
 </template>
 
 <script>
     export default {
         name: "ChallengeCard",
-        props: ['trip'],
+        props: ['trip', 'text', 'color', 'author'],
     }
 </script>
 

@@ -3,7 +3,6 @@ package ru.phoenigm.stuffer.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import ru.phoenigm.stuffer.domain.User;
@@ -27,17 +26,16 @@ public class ProfileController {
 
     @GetMapping("/profile")
     public Profile profile(Principal principal) {
-        User user = (User) userDetailsService.loadUserByUsername(principal.getName());
-
-        return Profile.fromUser(user);
+        return userService.getProfileByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Profile not found  "));
     }
 
     @GetMapping("/profile/{id}")
     public ResponseEntity<Profile> anotherProfile(@PathVariable Long id) {
-        Optional<User> userCandidate = userService.findById(id);
+        Optional<Profile> userCandidate = userService.getProfileByUserId(id);
 
         if (userCandidate.isPresent()) {
-            return ResponseEntity.ok(Profile.fromUser(userCandidate.get()));
+            return ResponseEntity.ok(userCandidate.get());
         }
         return ResponseEntity.notFound().build();
     }

@@ -13,8 +13,8 @@
                                         :size="370"
                                         color="yellow lighten-4"
                                 >
-                                    <img src="https://pp.userapi.com/c848536/v848536366/131886/EYolGIZVWhg.jpg"
-                                         alt="avatar">
+                                    <img :src="user.avatarUrl"
+                                         :alt="user.firstName + ' ' + user.lastName">
                                 </v-avatar>
 
                             </v-flex>
@@ -41,19 +41,71 @@
                                         </v-toolbar-title>
                                     </v-toolbar>
                                     <v-card-text>
-                                        <v-list style="background-color: #ab47bc">
+                                        <v-list style="background-color: #ab47bc"  v-if="reviews">
                                             <v-list-tile
-                                                    v-for="item in items"
-                                                    :key="item.title"
+                                                    v-for="item in reviews"
+                                                    :key="item.id"
                                                     avatar
-                                                    @click=""
+                                                    @click.stop="dialog = true"
                                             >
+
+                                                <v-dialog
+                                                        v-model="dialog"
+                                                        max-width="500"
+
+                                                >
+                                                    <v-card color="purple" dark>
+                                                        <v-card-title class="headline">
+                                                            <v-layout row justify-center align-center>
+                                                                <v-flex shrink mr-2>
+                                                                    <v-avatar>
+                                                                        <img
+                                                                                :src="item.reviewer.avatarUrl"
+                                                                                :alt="item.reviewer.firstName"
+                                                                        >
+                                                                    </v-avatar>
+                                                                </v-flex>
+                                                                <v-flex>
+                                                                    {{item.reviewer.firstName}} {{item.reviewer.lastName}}
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-card-title>
+
+                                                        <v-card-text>
+                                                            <v-layout column>
+
+                                                                <v-flex>
+                                                                    <v-rating
+                                                                            v-model="item.rating"
+                                                                            background-color="white"
+                                                                            color="yellow accent-4"
+                                                                            dense
+                                                                            :readonly="true"
+                                                                            half-increments
+                                                                            hover
+                                                                            size="18"
+                                                                    ></v-rating>
+                                                                </v-flex>
+
+                                                                <v-flex>
+                                                                    <v-textarea
+                                                                            box
+                                                                            label="Review"
+                                                                            auto-grow
+                                                                            readonly
+                                                                            :value="item.review"
+                                                                    ></v-textarea>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-card-text>
+                                                    </v-card>
+                                                </v-dialog>
                                                 <v-list-tile-avatar>
-                                                    <img :src="item.avatar">
+                                                    <img :src="item.reviewer.avatarUrl">
                                                 </v-list-tile-avatar>
 
                                                 <v-list-tile-content>
-                                                    <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                                                    <v-list-tile-title v-html="item.reviewer.firstName + ' ' + item.reviewer.lastName"></v-list-tile-title>
                                                 </v-list-tile-content>
 
                                                 <v-list-tile-action>
@@ -61,11 +113,7 @@
                                                 </v-list-tile-action>
                                             </v-list-tile>
 
-                                            <v-card-actions>
-                                                <v-spacer/>
-                                                <span class="text-sm-center subheading mr-2">Go to all reviews</span>
-                                                <v-icon> fas fa-angle-right</v-icon>
-                                            </v-card-actions>
+
                                         </v-list>
 
                                     </v-card-text>
@@ -147,12 +195,13 @@
                                         <v-layout align-center justify-center row wrap>
                                             <v-flex>
                                                 Driver rating:
-                                                <span class="grey--text text--lighten-2 caption mr-2">{{ rating }}</span>
+                                                <span class="grey--text text--lighten-2 caption mr-2">{{ user.driverRating === null ? '(nobody yet rate this driver)' : user.driverRating  }}</span>
                                                 <v-rating
-                                                        v-model="rating"
+                                                        v-model="user.driverRating"
                                                         background-color="white"
                                                         color="yellow accent-4"
                                                         dense
+                                                        :readonly="true"
                                                         half-increments
                                                         hover
                                                         size="18"
@@ -176,63 +225,27 @@
 
                             <v-flex>
                                 <v-card
-                                        class="hide-overflow"
-                                        color="purple lighten-1"
-                                        dark
+                                    class="hide-overflow"
+                                    color="purple lighten-1"
+                                    dark
+                            >
+                                <v-toolbar
+                                        card
+                                        color="purple"
                                 >
-                                    <v-toolbar
-                                            card
-                                            color="purple"
-                                    >
-                                        <v-icon>mdi-account</v-icon>
-                                        <v-toolbar-title class="font-weight-light">Trips</v-toolbar-title>
-                                    </v-toolbar>
-                                    <v-card-text>
-                                        <v-layout column subheading>
-                                            <v-flex xs12 my-1 v-for="i in 3" >
-                                                <v-card
-                                                        color="purple"
-                                                >
-                                                    <v-card-title>
-                                                        <v-layout justify-center>
-                                                            <span class="title font-weight-light">Уфа - Казань</span>
-                                                        </v-layout>
-                                                    </v-card-title>
+                                    <v-icon>mdi-account</v-icon>
+                                    <v-toolbar-title class="font-weight-light">Trips</v-toolbar-title>
+                                </v-toolbar>
+                                <v-card-text>
+                                    <v-layout column subheading>
+                                        <v-flex xs12 my-1 v-for="trip in user.lastTrips" >
+                                            <ChallengeCard :trip="trip"  :text="'subheading'" :color="'purple'" />
+                                        </v-flex>
 
-                                                    <v-card-text class="subheading font-weight-bold">
-
-                                                        <v-layout row>
-                                                            <v-flex>
-                                                                <v-layout column>
-                                                                    <v-flex>
-                                                                        <span>Delivery date:  23-03-2019 20:00</span>
-                                                                    </v-flex>
-                                                                    <v-flex>
-                                                                        <span>Delivery date:  23-03-2019 20:00</span>
-                                                                    </v-flex>
-                                                                </v-layout>
-                                                            </v-flex>
-
-                                                            <v-flex>
-                                                                <v-layout column>
-                                                                    <v-flex>
-                                                                        <span>From: Башкортостан, г Уфа, ул Первомайская, 49</span>
-                                                                    </v-flex>
-                                                                    <v-flex>
-                                                                        <span>To: Татарстан, г Казань, ул  Пушкина, 32</span>
-                                                                    </v-flex>
-                                                                </v-layout>
-                                                            </v-flex>
-                                                        </v-layout>
-
-                                                    </v-card-text>
-                                                </v-card>
-                                            </v-flex>
-
-                                        </v-layout>
-                                    </v-card-text>
-                                    <v-divider></v-divider>
-                                </v-card>
+                                    </v-layout>
+                                </v-card-text>
+                                <v-divider></v-divider>
+                            </v-card>
                             </v-flex>
 
                         </v-layout>
@@ -251,39 +264,29 @@
     import NavigationBar from "../components/NavigationBar";
     import {AXIOS} from "../api/http-common";
     import ChallengeCard from "../components/ChallengeCard";
+    import ReviewDialog from "../components/ReviewDialog";
 
     export default {
         name: "User",
-        components: {ChallengeCard, NavigationBar},
-        props: {
-
-        },
+        components: {ReviewDialog, ChallengeCard, NavigationBar},
 
         data() {
             return {
-                items: [
-                    {active: true, title: 'Jason Oner', avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'},
-                    {active: true, title: 'Ranee Carlson', avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'},
-                    {title: 'Cindy Baker', avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'},
-                ],
-                items2: [
-                    {title: 'Travis Howard', avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg'}
-                ],
+                reviews: [],
+                statistics: [],
 
-                statistics: [
-                    {title: 'Total trips', value: 2, icon: ''},
-                    {title: 'Last trip', value: '20.12.2018', icon: ''},
-                    {title: 'Reviews', value: 2, icon: ''},
-                ],
+                dialog: false,
 
+                user: {
+                },
 
-                hasSaved: false,
-                isEditing: null,
-                model: null,
-                rating: 4.11,
-                numberOfTrips: 0,
+            }
+        },
 
-                user: null
+        methods: {
+            setStatistics(totalTrips, reviewsCount) {
+                this.statistics.push({title: 'Total trips', value: totalTrips, icon: ''})
+                this.statistics.push({title: 'Reviews', value: reviewsCount, icon: ''},)
             }
         },
 
@@ -293,6 +296,8 @@
                 .then(response => {
                     this.user = response.data;
                     console.log(response.data);
+                    this.setStatistics(this.user.totalTrips, this.user.reviewsCount)
+                    this.reviews = response.data.lastReviews;
                 }).catch(error => {
                 console.log(error);
 

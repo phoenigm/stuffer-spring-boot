@@ -64,7 +64,7 @@
                 form.append('username', this.loginForm.email);
                 form.append('password', this.loginForm.password);
 
-                AXIOS.post('/oauth/token', form)
+                AXIOS.post('/oauth/token', form, { withCredentials: true})
                     .then(response => {
                         const token = response.data['access_token'];
                         console.log(token);

@@ -41,6 +41,7 @@ public class Trip {
     private String info;
 
     @OneToOne(mappedBy = "trip", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Review review;
 
     public enum TripStatus {

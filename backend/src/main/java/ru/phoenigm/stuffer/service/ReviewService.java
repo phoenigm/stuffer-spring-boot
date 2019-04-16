@@ -8,7 +8,6 @@ import ru.phoenigm.stuffer.domain.Review;
 import ru.phoenigm.stuffer.domain.User;
 import ru.phoenigm.stuffer.domain.form.ReviewForm;
 import ru.phoenigm.stuffer.repository.ReviewRepository;
-import ru.phoenigm.stuffer.repository.UserRepository;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -36,7 +35,7 @@ public class ReviewService {
                 .review(reviewForm.getReview())
                 .rating(reviewForm.getRating())
                 .reviewer(currentUser)
-                .driver(userService.findById(reviewForm.getDriverId())
+                .driver(userService.getByUserId(reviewForm.getDriverId())
                         .orElseThrow(() -> new RuntimeException("Error while review creating")))
                 .reviewDate(LocalDateTime.now())
                 .trip(tripService.getById(reviewForm.getTripId())
@@ -44,6 +43,9 @@ public class ReviewService {
                 .build();
 
         return reviewRepository.save(review);
+    }
 
+    public Integer ratingByUserId(Long id) {
+        return reviewRepository.getAverageRatingByDriverId(id);
     }
 }
