@@ -7,23 +7,28 @@ let store = new Vuex.Store({
     state: {
         token: localStorage.getItem('token') || '',
         user: {},
-        trips: []
+        trips: [],
+        myTrips: []
     },
     getters: {
         isAuthenticated: state => !!state.token,
         getUser: state => state.user,
         token: state => state.token,
-        getTrips: state => state.trips
+        getTrips: state => state.trips,
+        getMyTrips: state => state.myTrips
     },
     mutations: {
         setUser(state, payload) {
             state.user = payload
         },
         setToken(state, payload) {
-            state.token = payload;
+            state.token = payload
         },
         setTrips(state, payload) {
             state.trips = payload
+        },
+        setMyTrips(state, payload) {
+          state.myTrips = payload
         },
         clearToken(state) {
             state.token = '';
@@ -33,6 +38,9 @@ let store = new Vuex.Store({
     actions: {
         logout({commit}) {
             commit('clearToken');
+        },
+        myProfile({commit}, payload) {
+            commit('setUser', payload)
         }
     }
 });

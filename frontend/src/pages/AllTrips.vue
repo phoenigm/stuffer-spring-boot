@@ -8,7 +8,7 @@
                     <v-layout row wrap>
 
                         <v-flex v-for="trip in trips" :key="trip.id" xs12>
-                            <ChallengeCard :trip="trip" :my="false"/>
+                            <ChallengeCard :trip="trip" :author="trip.author" :color="'purple'" :text="'headline'"/>
                         </v-flex>
                     </v-layout>
                 </v-container>

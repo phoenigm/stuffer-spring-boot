@@ -4,7 +4,7 @@
 
         <v-content>
             <v-container>
-                <v-layout row>
+                <v-layout row v-if="user">
                     <v-flex xs4 mr-3>
                         <v-layout column>
                             <v-flex>
@@ -16,16 +16,23 @@
                                     <img :src="user.avatarUrl"
                                          :alt="user.firstName + ' ' + user.lastName">
                                 </v-avatar>
+                                <input
+                                        v-show="false"
+                                        type="file"
+                                        ref="image"
+                                        accept="image/*"
+                                        @change="onFilePicked"
+                                >
                             </v-flex>
 
                             <v-flex my-3>
                                 <v-btn
                                         :loading="uploadAvatar"
-                                        :disabled="uploadAvatar"
+                                        :disabled="uploadAvatar "
                                         color="purple"
                                         block
                                         class="white--text"
-                                        @click="loader = 'uploadAvatar'"
+                                        @click="pickFile"
                                 >
                                     Upload avatar
                                 </v-btn>
@@ -307,6 +314,12 @@
 
 
                 </v-layout>
+                <v-layout align-center justify-center fill-height v-else>
+                    <v-progress-circular
+                            indeterminate
+                            color="amber"
+                    ></v-progress-circular>
+                </v-layout>
             </v-container>
         </v-content>
 
@@ -338,7 +351,11 @@
                 updateProfileMessage: '',
                 response: null,
 
-                user: {},
+                imageName: '',
+                imageUrl: '',
+                imageFile: '',
+
+                user: null,
 
                 updateProfileForm: {
                     firstName: null,
@@ -363,6 +380,20 @@
         },
 
         methods: {
+            uploadAvatarToServer(file) {
+                const formData  = new FormData();
+                formData.append('avatar', file, this.imageName);
+
+                AXIOS.put('/api/profile', formData)
+                    .then(response => {
+                        this.user.avatarUrl = response.data.url;
+                        console.log(response.data);
+
+                    }).catch(error => {
+                    console.log(error)
+                })
+            },
+
             save() {
                 this.isEditing = !this.isEditing;
                 this.updateProfileForm.email = this.user.email;
@@ -370,7 +401,7 @@
                 AXIOS.post('/api/profile', this.updateProfileForm)
                     .then(response => {
                         if (response.status === 200) {
-                            this.$store.commit('setUser', response.data);
+                            this.$store.dispatch('myProfile', response.data);
                             this.hasSaved = true;
                         }
                     })
@@ -383,6 +414,31 @@
             setStatistics(totalTrips, reviewsCount) {
                 this.statistics.push({title: 'Total trips', value: totalTrips, icon: ''})
                 this.statistics.push({title: 'Reviews', value: reviewsCount, icon: ''},)
+            },
+
+            pickFile() {
+                this.$refs.image.click()
+            },
+
+            onFilePicked(e) {
+                const files = e.target.files
+                if (files[0] !== undefined) {
+                    this.imageName = files[0].name
+                    if (this.imageName.lastIndexOf('.') <= 0) {
+                        return
+                    }
+                    const fr = new FileReader()
+                    fr.readAsDataURL(files[0])
+                    fr.addEventListener('load', () => {
+                        this.imageUrl = fr.result
+                        this.imageFile = files[0];
+                        this.uploadAvatarToServer(this.imageFile);
+                    })
+                } else {
+                    this.imageName = ''
+                    this.imageFile = ''
+                    this.imageUrl = ''
+                }
             }
         },
 

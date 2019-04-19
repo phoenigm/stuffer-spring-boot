@@ -176,6 +176,9 @@
         },
         methods: {
             goToPage(page) {
+                if (page === '/quit') {
+                    this.$store.dispatch('logout');
+                }
                 this.$router.push(page);
             },
             logout() {

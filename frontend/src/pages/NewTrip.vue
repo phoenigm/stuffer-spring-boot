@@ -11,7 +11,7 @@
                                 <v-container>
                                     <v-layout column justify-center wrap>
                                         <v-flex xs12 text-xs-center>
-                                            <span class="display-3 ">Create new trip</span>
+                                            <span class="display-2 ">Create new trip</span>
                                         </v-flex>
                                         <v-flex>
                                             <v-text-field
@@ -58,7 +58,7 @@
                                             <v-layout row>
                                                 <v-flex>
                                                     <v-menu
-                                                            v-model="menu2"
+                                                            v-model="menu"
                                                             :close-on-content-click="false"
                                                             :nudge-right="40"
                                                             lazy
@@ -69,15 +69,15 @@
                                                     >
                                                         <template v-slot:activator="{ on }">
                                                             <v-text-field
-                                                                    v-model="date"
-                                                                    label="Picker without buttons"
+                                                                    v-model="tripForm.departureDate"
+                                                                    label="Departure date"
                                                                     prepend-icon="event"
                                                                     readonly
                                                                     v-on="on"
                                                             ></v-text-field>
                                                         </template>
                                                         <v-date-picker v-model="date"
-                                                                       @input="menu2 = false"></v-date-picker>
+                                                                       @input="menu = false"></v-date-picker>
                                                     </v-menu>
                                                 </v-flex>
 
@@ -111,7 +111,7 @@
                                                                     v-on="on"
                                                             ></v-text-field>
                                                         </template>
-                                                        <v-date-picker v-model="date"
+                                                        <v-date-picker v-model="tripForm.arrivalDate"
                                                                        @input="menu2 = false"></v-date-picker>
                                                     </v-menu>
                                                 </v-flex>

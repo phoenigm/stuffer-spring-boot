@@ -4,7 +4,7 @@
 
         <v-content>
             <v-container>
-                <v-layout row>
+                <v-layout row v-if="user">
                     <v-flex xs4 mr-3>
                         <v-layout column>
                             <v-flex mb-3>
@@ -254,6 +254,12 @@
 
 
                 </v-layout>
+                <v-layout align-center justify-center fill-height v-else>
+                    <v-progress-circular
+                            indeterminate
+                            color="amber"
+                    ></v-progress-circular>
+                </v-layout>
             </v-container>
         </v-content>
     </v-app>
@@ -277,8 +283,9 @@
 
                 dialog: false,
 
-                user: {
-                },
+                user: null,
+
+                mainUserId: this.$store.getters['getUser'].id,
 
             }
         },
@@ -290,8 +297,16 @@
             }
         },
 
-        mounted() {
+        created() {
+            const userId =  this.$route.params.userId;
+            console.log(userId);
+            console.log(this.mainUserId);
+            if (userId === this.mainUserId) {
+                this.$router.replace('/profile');
+            }
+        },
 
+        mounted() {
             AXIOS.get('/api/profile/' + this.$route.params.userId)
                 .then(response => {
                     this.user = response.data;

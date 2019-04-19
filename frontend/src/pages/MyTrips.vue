@@ -8,7 +8,7 @@
                     <v-layout row wrap>
 
                         <v-flex v-for="trip in trips" :key="trip.id" xs12>
-                            <ChallengeCard :trip="trip" :my="true"/>
+                            <ChallengeCard :trip="trip" :color="'purple'" :text="'headline'"/>
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -34,7 +34,7 @@
         },
 
         mounted() {
-            AXIOS.get('/api/trip/all')
+            AXIOS.get('/api/trip/my')
                 .then(response => {
                     console.log(response.data)
                     this.$store.commit('setTrips', response.data);
