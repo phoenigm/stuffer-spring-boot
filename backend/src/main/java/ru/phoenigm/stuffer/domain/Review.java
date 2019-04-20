@@ -26,7 +26,6 @@ public class Review {
     private User reviewer;
 
     @ManyToOne
-
     @JoinColumn(name = "driver_id")
     private User driver;
 
@@ -35,7 +34,7 @@ public class Review {
     private Trip trip;
 
     private LocalDateTime reviewDate;
-    private Integer rating;
+    private Double rating;
 
     @Column(columnDefinition = "text")
     private String review;

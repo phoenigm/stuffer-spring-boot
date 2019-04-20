@@ -1,4 +1,12 @@
 package ru.phoenigm.stuffer.repository;
 
-public interface TripRequestRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.phoenigm.stuffer.domain.TripRequest;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface TripRequestRepository extends JpaRepository<TripRequest, Long> {
+    Optional<TripRequest> findByTripId(Long tripId);
+    List<TripRequest> findAllByDriverId(Long driverId);
 }

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
-import ru.phoenigm.stuffer.domain.User;
+import org.springframework.web.multipart.MultipartFile;
 import ru.phoenigm.stuffer.domain.form.ProfileUpdateForm;
 import ru.phoenigm.stuffer.payload.Profile;
 import ru.phoenigm.stuffer.service.UserService;
@@ -17,9 +17,6 @@ import java.util.Optional;
 @RequestMapping("/api")
 @Slf4j
 public class ProfileController {
-
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     @Autowired
     private UserService userService;
@@ -43,6 +40,11 @@ public class ProfileController {
     @PostMapping("/profile")
     public ResponseEntity<Profile> update(ProfileUpdateForm form) {
         return ResponseEntity.ok(Profile.fromUser(userService.update(form)));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> uploadAvatar(@RequestParam("avatar") MultipartFile file, Principal principal) {
+        return ResponseEntity.ok(userService.uploadAvatar(principal.getName(), file));
     }
 
 }

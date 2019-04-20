@@ -67,9 +67,9 @@
                 AXIOS.post('/oauth/token', form, { withCredentials: true})
                     .then(response => {
                         const token = response.data['access_token'];
-                        console.log(token);
 
                         localStorage.setItem('token', token);
+                        localStorage.setItem('refresh_token', response.data['refresh_token']);
                         this.$store.commit('setToken', token);
 
                         if (response.status === 200) {

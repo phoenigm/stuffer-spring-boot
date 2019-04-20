@@ -38,14 +38,14 @@ public class ReviewService {
                 .driver(userService.getByUserId(reviewForm.getDriverId())
                         .orElseThrow(() -> new RuntimeException("Error while review creating")))
                 .reviewDate(LocalDateTime.now())
-                .trip(tripService.getById(reviewForm.getTripId())
+                .trip(tripService.findById(reviewForm.getTripId())
                         .orElseThrow(() -> new RuntimeException("Error while review creating")))
                 .build();
 
         return reviewRepository.save(review);
     }
 
-    public Integer ratingByUserId(Long id) {
+    public Double ratingByUserId(Long id) {
         return reviewRepository.getAverageRatingByDriverId(id);
     }
 }

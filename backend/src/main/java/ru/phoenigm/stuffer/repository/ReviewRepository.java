@@ -6,5 +6,5 @@ import ru.phoenigm.stuffer.domain.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT AVG(r.rating) from Review r where r.driver.id = :id")
-    Integer getAverageRatingByDriverId(Long id);
+    Double getAverageRatingByDriverId(Long id);
 }

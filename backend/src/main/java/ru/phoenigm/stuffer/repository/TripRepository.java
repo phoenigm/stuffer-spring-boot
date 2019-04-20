@@ -7,5 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
-    List<Trip> getTripsByDepartureDate(LocalDateTime departureDate);
+    List<Trip> findAllByDepartureDate(LocalDateTime departureDate);
+    List<Trip> findAllByAuthorEmail(String email);
 }

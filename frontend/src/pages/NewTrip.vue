@@ -76,7 +76,7 @@
                                                                     v-on="on"
                                                             ></v-text-field>
                                                         </template>
-                                                        <v-date-picker v-model="date"
+                                                        <v-date-picker v-model="tripForm.departureDate"
                                                                        @input="menu = false"></v-date-picker>
                                                     </v-menu>
                                                 </v-flex>
@@ -154,20 +154,14 @@
         name: "NewChallenge",
         components: {NavigationBar},
         data() {
-            const srcs = {
-                1: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                2: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-                3: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-                4: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
-                5: 'https://cdn.vuetifyjs.com/images/lists/5.jpg'
-            };
+
             return {
                 tripForm: {
                     info: null,
                     arrivalDate: new Date().toISOString().substr(0, 10),
                     arrivalTime: '2359',
                     departureDate: new Date().toISOString().substr(0, 10),
-                    departureTime: new Date().getHours() > 9 ? '' : '0' + new Date().getHours() + '' + new Date().getMinutes(),
+                    departureTime: '2358',
                     departurePoint: null,
                     deliveryPoint: null,
                     price: null

@@ -1,6 +1,7 @@
 package ru.phoenigm.stuffer.domain;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "publishedTrips")
+@EqualsAndHashCode(of = "id")
 @Table(name = "service_user")
 public class User implements UserDetails {
     @Id
@@ -37,7 +38,7 @@ public class User implements UserDetails {
     private LocalDateTime lastVisit;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Trip> publishedTrips;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -52,6 +53,18 @@ public class User implements UserDetails {
     @JsonBackReference
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviews;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "stuffers", cascade = CascadeType.ALL)
+    private Set<Trip> stufferTrips;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
+    private Set<TripRequest> receivedRequests;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "stuffer", cascade = CascadeType.ALL)
+    private Set<TripRequest> sentRequests;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

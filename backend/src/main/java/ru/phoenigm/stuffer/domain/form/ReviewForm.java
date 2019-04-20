@@ -8,6 +8,6 @@ import lombok.Data;
 public class ReviewForm {
     private Long driverId;
     private Long tripId;
-    private Integer rating;
+    private Double rating;
     private String review;
 }

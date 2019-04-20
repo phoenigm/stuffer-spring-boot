@@ -6,8 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.phoenigm.stuffer.domain.Trip;
 import ru.phoenigm.stuffer.domain.form.TripRegistrationForm;
+import ru.phoenigm.stuffer.domain.form.TripUpdateForm;
 import ru.phoenigm.stuffer.service.TripService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +21,7 @@ public class TripController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Trip> trip(@PathVariable Long id) {
-        Optional<Trip> tripCandidate = tripService.getById(id);
+        Optional<Trip> tripCandidate = tripService.findById(id);
         return tripCandidate.isPresent() ?
                 ResponseEntity.ok(tripCandidate.get())
                 : ResponseEntity.notFound().build();
@@ -40,8 +42,18 @@ public class TripController {
         }
     }
 
+    @PutMapping("/{id}")
+    public Trip updateTrip(@PathVariable Long id, @RequestBody TripUpdateForm form, Principal principal) {
+        return tripService.updateById(id, form, principal);
+    }
+
     @GetMapping("/all")
     public List<Trip> allTrips() {
         return tripService.getAllTrips();
+    }
+
+    @GetMapping("/my")
+    public List<Trip> myTrips(Principal principal) {
+        return tripService.getMyTrips(principal.getName());
     }
 }

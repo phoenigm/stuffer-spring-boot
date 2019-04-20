@@ -1,16 +1,20 @@
 package ru.phoenigm.stuffer.domain;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"stuffers", "reviews"})
 @Table
 public class Trip {
     @Id
@@ -19,7 +23,6 @@ public class Trip {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    @JsonIgnore
     private User author;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
@@ -40,14 +43,21 @@ public class Trip {
     @Column(columnDefinition = "text")
     private String info;
 
-    @OneToOne(mappedBy = "trip", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     @JsonBackReference
-    private Review review;
+    private List<Review> reviews;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_to_trip",
+            joinColumns = {@JoinColumn(name = "trip_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")})
+    private Set<User> stuffers;
 
     public enum TripStatus {
-        ACTIVE,
+        IN_TRIP,
+        READY,
         FULL,
-        OOMPLETED
+        COMPLETED
     }
 
 

@@ -32,6 +32,7 @@ let store = new Vuex.Store({
         },
         clearToken(state) {
             state.token = '';
+            localStorage.removeItem('refresh_token');
             localStorage.removeItem('token')
         },
     },

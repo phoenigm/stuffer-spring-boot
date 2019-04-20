@@ -1,24 +1,29 @@
 package ru.phoenigm.stuffer.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import ru.phoenigm.stuffer.domain.Role;
 import ru.phoenigm.stuffer.domain.User;
 import ru.phoenigm.stuffer.domain.form.ProfileUpdateForm;
 import ru.phoenigm.stuffer.domain.form.RegistrationForm;
 import ru.phoenigm.stuffer.exception.UserAlreadyExistsException;
+import ru.phoenigm.stuffer.payload.Avatar;
 import ru.phoenigm.stuffer.payload.Profile;
 import ru.phoenigm.stuffer.repository.UserRepository;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -34,6 +39,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Transactional
     public User register(RegistrationForm form) {
@@ -63,7 +71,8 @@ public class UserService {
 
         if (userOptional.isPresent()) {
             Profile profile = Profile.fromUser(userOptional.get());
-            profile.setDriverRating(reviewService.ratingByUserId(id) / 20.0);
+            profile.setDriverRating(reviewService.ratingByUserId(id));
+
             return Optional.of(profile);
         }
         return Optional.empty();
@@ -75,7 +84,8 @@ public class UserService {
 
         if (user != null) {
             Profile profile = Profile.fromUser(user);
-            profile.setDriverRating(reviewService.ratingByUserId(user.getId()) / 20.0);
+            profile.setDriverRating(reviewService.ratingByUserId(user.getId()));
+
             return Optional.of(profile);
         }
         return Optional.empty();
@@ -97,5 +107,25 @@ public class UserService {
         currentUser.setLastPasswordResetDate(new Date());
 
         return userRepository.save(currentUser);
+    }
+
+    public Avatar uploadAvatar(String userEmail, MultipartFile file) {
+        try {
+            Map uploadResult = cloudinary.uploader()
+                    .upload(file.getBytes(), ObjectUtils.emptyMap());
+            Optional<User> userOptional = userRepository.findByEmail(userEmail);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                user.setAvatarUrl(uploadResult.get("url").toString());
+                userRepository.save(user);
+            }
+            return Avatar.builder()
+                    .url(uploadResult.get("url").toString())
+                    .format(uploadResult.get("format").toString())
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to uplaod avatar");
+        }
     }
 }

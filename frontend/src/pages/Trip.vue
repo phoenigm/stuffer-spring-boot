@@ -142,7 +142,7 @@
                                             </v-layout>
                                         </v-flex>
 
-                                        <v-flex>
+                                        <v-flex v-if="trip.stuffers.length !== 0">
                                             <v-autocomplete
                                                     v-model="tripForm.stuffers"
                                                     :disabled="!edit"
@@ -316,7 +316,7 @@
                             </v-flex>
                             <v-flex v-if="isAllowReviewDriver">
                                 <v-btn color="primary">Review</v-btn>
-                                <v-dialog v-model="request" persistent max-width="500">
+                                <v-dialog v-model="reviewDialog" persistent max-width="500">
                                     <template v-slot:activator="{ on }">
                                         <v-btn color="primary" dark v-on="on">Request</v-btn>
                                     </template>
@@ -379,7 +379,62 @@
                                 <v-btn color="red">Refuse to trip</v-btn>
                             </v-flex>
                             <v-flex v-else-if="isRequestable">
-                                <v-btn color="primary">Request</v-btn>
+                                <v-dialog
+                                        v-model="request"
+                                        width="500"
+                                >
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn
+                                                color="red lighten-2"
+                                                dark
+                                                v-on="on"
+                                        >
+                                            Request to trip
+                                        </v-btn>
+                                    </template>
+
+                                    <v-card color="purple lighten-2" dark>
+                                        <v-card-title class="headline">
+                                            <v-layout row justify-center align-center>
+                                                <v-flex shrink mr-2>
+                                                    <v-avatar>
+                                                        <img
+                                                                :src="trip.author.avatarUrl"
+                                                                :alt="trip.author.firstName"
+                                                        >
+                                                    </v-avatar>
+                                                </v-flex>
+                                                <v-flex>
+                                                    {{trip.author.firstName}} {{trip.author.lastName}}
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-card-title>
+
+                                        <v-card-text>
+                                            <v-textarea
+                                                    box
+                                                    label="Request text"
+                                                    placeholder="Please describe your stuff to trip"
+                                                    color="white"
+                                                    auto-grow
+                                                    v-model="requestForm.requestText"
+                                            ></v-textarea>
+                                        </v-card-text>
+
+                                        <v-divider></v-divider>
+
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn
+                                                    color="red lighten-1"
+                                                    dark
+                                                    @click="sendTripRequest"
+                                            >
+                                                Send request
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
                             </v-flex>
                         </v-layout>
 
@@ -430,7 +485,7 @@
                 return this.isStuffed && this.isCompleted;
             },
             isRequestable: function () {
-                return this.trip.status === 'READY'
+                return this.trip.status === 'READY' && !this.isMyTrip
             }
         },
 
@@ -445,6 +500,11 @@
                 reviewForm: {
                     rating: '',
                     review: ''
+                },
+
+                requestForm: {
+                    tripId: null,
+                    requestText: null,
                 },
 
                 stuffers: {},
@@ -495,7 +555,15 @@
 
             updateTrip() {
                 this.edit = !this.edit;
-                AXIOS.put('/api/trip/' + this.$route.params.tripId, this.tripForm)
+                const tripForm = JSON.parse(JSON.stringify(this.tripForm));
+                tripForm.arrivalDate = this.tripForm.arrivalDate
+                    + ' ' + this.tripForm.arrivalTime.substr(0, 2)
+                    + ':' + this.tripForm.arrivalTime.substr(2, 4);
+                tripForm.departureDate = this.tripForm.departureDate
+                    + ' ' + this.tripForm.departureTime.substr(0, 2)
+                    + ':' + this.tripForm.departureTime.substr(2, 4);
+
+                AXIOS.put('/api/trip/' + this.$route.params.tripId, tripForm)
                     .then(response => {
                         console.log('upd:');
                         console.log(response.data);
@@ -504,6 +572,21 @@
                     }).catch(error => {
                     console.log('error while upd: ' + error)
                 })
+            },
+
+            sendTripRequest() {
+                this.request = false;
+                this.requestForm.tripId = this.trip.id;
+                AXIOS.post('/api/request/send',  this.requestForm)
+                    .then(request => {
+                        console.log(request)
+                    }).catch(error => {
+                        console.log(error);
+                })
+            },
+
+            cancelTripRequest() {
+
             }
 
         },
@@ -524,9 +607,9 @@
                     this.tripForm = {
                         info: this.trip.info,
                         arrivalDate: this.trip.arrivalDate.substring(0, 10),
-                        arrivalTime: this.trip.arrivalDate.substring(11, 16),
+                        arrivalTime: this.trip.arrivalDate.substring(11, 16).replace(':', ''),
                         departureDate: this.trip.departureDate.substring(0, 10),
-                        departureTime: this.trip.departureDate.substring(11, 16),
+                        departureTime: this.trip.departureDate.substring(11, 16).replace(':', ''),
                         departurePoint: this.trip.departurePoint,
                         deliveryPoint: this.trip.deliveryPoint,
                         stuffers: this.trip.stuffers,
