@@ -39,7 +39,8 @@ public class TripRequestService {
     }
 
     public List<TripRequest> getMyTripRequests() {
-        return requestRepository.findAllByDriverId(currentUser().getId());
+        return requestRepository.findAllByDriverIdAndStatus(currentUser().getId(),
+                TripRequest.TripRequestStatus.UNDER_CONSIDERATION);
     }
 
     @Transactional
@@ -61,6 +62,8 @@ public class TripRequestService {
                     .trip(trip)
                     .driver(trip.getAuthor())
                     .stuffer(currentUser())
+                    .requestText(form.getRequestText())
+                    .status(TripRequest.TripRequestStatus.UNDER_CONSIDERATION)
                     .build();
             requestRepository.save(tripRequest);
             return requestRepository.save(tripRequest);
@@ -84,7 +87,11 @@ public class TripRequestService {
                 throw new RuntimeException("You did't send request to trip " + tripId);
             }
 
-            requestRepository.delete(request);
+            if (request.getStatus() != TripRequest.TripRequestStatus.ACCEPTED) {
+                throw new RuntimeException("You can't cancel not accepted request");
+            }
+
+            requestRepository.deleteById(request.getId());
             return;
         }
         throw new RuntimeException("Trip with id " + tripId + " doesn't exist");
@@ -100,11 +107,16 @@ public class TripRequestService {
             if (!tripRequest.getDriver().equals(currentUser())) {
                 throw new RuntimeException("Illegal access to request");
             }
-            Trip trip = tripRequest.getTrip();
-            trip.getStuffers().add(tripRequest.getStuffer());
-            // todo: persist stuffer to trip
-            tripRepository.save(trip);
-            requestRepository.delete(tripRequest);
+
+            if (confirmation.getStatus() == TripRequest.TripRequestStatus.ACCEPTED) {
+                Trip trip = tripRequest.getTrip();
+                trip.getStuffers().add(tripRequest.getStuffer());
+                // todo: persist stuffer to trip
+                tripRepository.save(trip);
+            }
+            tripRequest.setStatus(confirmation.getStatus());
+            requestRepository.save(tripRequest);
+            return;
         }
         throw new RuntimeException("Trip request not found");
     }

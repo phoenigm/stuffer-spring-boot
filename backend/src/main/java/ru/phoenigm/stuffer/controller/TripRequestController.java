@@ -27,13 +27,14 @@ public class TripRequestController {
     }
 
     @PostMapping("/cancel")
-    public ResponseEntity<?> sendTripRequest(@RequestBody Long tripId) {
+    public ResponseEntity<?> sendTripRequest(@RequestParam("tripId") Long tripId) {
         requestService.cancelTripRequest(tripId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/process")
-    public TripRequest processTripRequest(@RequestBody TripRequestConfirmation confirmation) {
-        return requestService.processTripRequest(confirmation);
+    public ResponseEntity processTripRequest(@RequestBody TripRequestConfirmation confirmation) {
+        requestService.processTripRequest(confirmation);
+        return ResponseEntity.ok().build();
     }
 }

@@ -28,6 +28,9 @@ public class TripRequest {
     @JoinColumn(name = "stuffer_id")
     private User stuffer;
 
+    @Enumerated(EnumType.STRING)
+    private TripRequestStatus status;
+
     public enum TripRequestStatus {
         ACCEPTED,
         DECLINED,
