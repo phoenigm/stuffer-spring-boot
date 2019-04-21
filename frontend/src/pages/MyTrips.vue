@@ -50,12 +50,20 @@
                 tab: null,
                 trips: null,
                 requests: null,
+
+                requestConfirmation: {
+
+                }
             }
         },
 
         methods: {
-            processRequest() {
-                AXIOS.post('/api/request/process')
+            processRequest(id, status) {
+                this.requestConfirmation = {
+                    status: id,
+                    tripRequestId: status
+                };
+                AXIOS.post('/api/request/process', this.requestConfirmation)
                     .then(response => {
 
                     }).catch(error => {

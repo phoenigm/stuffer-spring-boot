@@ -5,25 +5,12 @@
         <v-content>
             <v-container>
                 <v-layout row justify-center>
-                    <v-flex xs12 sm8>
+                    <v-flex xs12 sm9>
 
                         <v-list two-line>
-                            <template v-for="(item, index) in items">
-                                <v-subheader
-                                        v-if="item.header"
-                                        :key="item.header"
-                                >
-                                    {{ item.header }}
-                                </v-subheader>
-
-                                <v-divider
-                                        v-else-if="item.divider"
-                                        :key="index"
-                                        :inset="item.inset"
-                                ></v-divider>
-
+                            <template v-for="item in items" >
+                                <v-divider/>
                                 <v-list-tile
-                                        v-else
                                         :key="item.title"
                                         avatar
                                         @click=""
@@ -56,23 +43,17 @@
         data() {
             return {
                 items: [
-                    {header: 'Today'},
                     {
                         avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                        title: 'phoenigm',
-                        subtitle: " I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
+                        title: 'Azat Mukhametzyanov',
                     },
-                    {divider: true, inset: true},
                     {
                         avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-                        title: 'flisoch <span class="grey--text text--lighten-1">4</span>',
-                        subtitle: " Wish I could come, but I'm out of town this weekend."
+                        title: 'Azat Mukhametzyanov',
                     },
-                    {divider: true, inset: true},
                     {
                         avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-                        title: 'celmas',
-                        subtitle: "Do you have Paris recommendations? Have you ever been?"
+                        title: 'Azat Mukhametzyanov',
                     }
                 ]
             }

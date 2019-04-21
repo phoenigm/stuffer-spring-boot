@@ -18,7 +18,6 @@
                                     <v-list-tile-title>{{tripRequest.stuffer.firstName}} {{tripRequest.stuffer.lastName}}
                                     </v-list-tile-title>
                                 </v-list-tile-content>
-                                {{tripRequest.requestText}}
                             </v-list-tile>
                         </v-flex>
                         <v-flex class="title" ml-3>
@@ -30,10 +29,10 @@
 
                 <v-flex shrink>
                     <v-spacer/>
-                    <v-btn fab dark color="green">
+                    <v-btn fab dark color="green" @click="processRequest(tripRequest.id, 'ACCEPTED')">
                         <v-icon dark>fas fa-check</v-icon>
                     </v-btn>
-                    <v-btn fab dark color="red">
+                    <v-btn fab dark color="red" @click="processRequest(tripRequest.id, 'DECLINED')">
                         <v-icon dark>fas fa-times</v-icon>
                     </v-btn>
                 </v-flex>
@@ -49,9 +48,25 @@
 </template>
 
 <script>
+    import {AXIOS} from '../api/http-common'
     export default {
         name: "TripRequest",
-        props: ['tripRequest']
+        props: ['tripRequest'],
+
+        methods: {
+            processRequest(id, status) {
+                this.requestConfirmation = {
+                    status: status,
+                    tripRequestId: id
+                };
+                AXIOS.post('/api/request/process', this.requestConfirmation)
+                    .then(response => {
+
+                    }).catch(error => {
+                    console.log(error);
+                })
+            }
+        }
     }
 </script>
 
