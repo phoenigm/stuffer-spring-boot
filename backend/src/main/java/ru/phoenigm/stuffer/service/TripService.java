@@ -9,6 +9,7 @@ import ru.phoenigm.stuffer.domain.Trip;
 import ru.phoenigm.stuffer.domain.User;
 import ru.phoenigm.stuffer.domain.form.TripRegistrationForm;
 import ru.phoenigm.stuffer.domain.form.TripUpdateForm;
+import ru.phoenigm.stuffer.payload.TripDto;
 import ru.phoenigm.stuffer.repository.TripRepository;
 
 import java.security.Principal;
@@ -26,14 +27,27 @@ public class TripService {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private ReviewService reviewService;
+
+    private User currentUser() {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        return (User) userDetailsService.loadUserByUsername(principal.getName());
+    }
+
     @Transactional
     public List<Trip> getAllTrips() {
         return tripRepository.findAll();
     }
 
     @Transactional
-    public List<Trip> getMyTrips(String email) {
-        return tripRepository.findAllByAuthorEmail(email);
+    public List<Trip> getMyTrips() {
+        return tripRepository.findAllByAuthorEmail(currentUser().getEmail());
+    }
+
+    @Transactional
+    public List<Trip> getJoinedTrips() {
+        return tripRepository.findAllByStuffersEmail(currentUser().getEmail());
     }
 
     public List<Trip> getAllSuitableTrips(LocalDateTime departureDate) {
@@ -42,8 +56,6 @@ public class TripService {
 
     @Transactional
     public Trip save(TripRegistrationForm registrationForm) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) userDetailsService.loadUserByUsername(principal.getName());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         Trip trip = Trip.builder()
@@ -54,7 +66,7 @@ public class TripService {
                 .price(registrationForm.getPrice())
                 .info(registrationForm.getInfo())
                 .publicationDate(LocalDateTime.now())
-                .author(currentUser)
+                .author(currentUser())
                 .status(Trip.TripStatus.READY)
                 .build();
 
@@ -62,13 +74,13 @@ public class TripService {
     }
 
     @Transactional
-    public Trip updateById(Long id, TripUpdateForm form, Principal principal) {
+    public Trip updateById(Long id, TripUpdateForm form) {
         Optional<Trip> tripOptional = tripRepository.findById(id);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         if (tripOptional.isPresent()) {
             Trip trip = tripOptional.get();
 
-            if (!trip.getAuthor().getEmail().equals(principal.getName())) {
+            if (!trip.getAuthor().getEmail().equals(currentUser().getEmail())) {
                 throw new RuntimeException("You can't update not own trip");
             }
 
@@ -85,7 +97,19 @@ public class TripService {
     }
 
     @Transactional
-    public Optional<Trip> findById(Long id) {
+    public Optional<TripDto> findById(Long id) {
+        Optional<Trip> tripOptional = tripRepository.findById(id);
+        if (tripOptional.isPresent()) {
+            Trip trip = tripOptional.get();
+            TripDto tripDto = TripDto.from(trip);
+            tripDto.getAuthor().setDriverRating(reviewService.ratingByUserId(tripDto.getAuthor().getId()));
+            return Optional.of(tripDto);
+        }
+        return Optional.empty();
+    }
+
+    @Transactional
+    public Optional<Trip> getById(Long id) {
         return tripRepository.findById(id);
     }
 

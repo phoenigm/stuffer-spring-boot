@@ -59,6 +59,4 @@ public class Trip {
         FULL,
         COMPLETED
     }
-
-
 }

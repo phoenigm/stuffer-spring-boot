@@ -34,7 +34,8 @@ public class TripRequest {
     public enum TripRequestStatus {
         ACCEPTED,
         DECLINED,
-        UNDER_CONSIDERATION
+        UNDER_CONSIDERATION,
+        DELETED
     }
 
 }

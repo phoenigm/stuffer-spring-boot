@@ -17,6 +17,11 @@ public class TripRequestController {
     private TripRequestService requestService;
 
     @GetMapping("/toMe")
+    public List<TripRequest> tripRequestsForMe() {
+        return requestService.getTripRequestsForMe();
+    }
+
+    @GetMapping("/my")
     public List<TripRequest> myTripRequests() {
         return requestService.getMyTripRequests();
     }

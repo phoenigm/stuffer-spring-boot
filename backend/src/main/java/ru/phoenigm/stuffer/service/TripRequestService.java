@@ -16,6 +16,7 @@ import ru.phoenigm.stuffer.repository.TripRequestRepository;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TripRequestService {
@@ -29,7 +30,6 @@ public class TripRequestService {
     @Autowired
     private TripRequestRepository requestRepository;
 
-
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -38,14 +38,19 @@ public class TripRequestService {
         return (User) userDetailsService.loadUserByUsername(principal.getName());
     }
 
-    public List<TripRequest> getMyTripRequests() {
+    public List<TripRequest> getTripRequestsForMe() {
         return requestRepository.findAllByDriverIdAndStatus(currentUser().getId(),
+                TripRequest.TripRequestStatus.UNDER_CONSIDERATION);
+    }
+
+    public List<TripRequest> getMyTripRequests() {
+        return requestRepository.findAllByStufferIdAndStatus(currentUser().getId(),
                 TripRequest.TripRequestStatus.UNDER_CONSIDERATION);
     }
 
     @Transactional
     public TripRequest sendTripRequest(TripRequestForm form) {
-        Optional<Trip> tripOptional = tripService.findById(form.getTripId());
+        Optional<Trip> tripOptional = tripRepository.findById(form.getTripId());
 
         if (tripOptional.isPresent()) {
             Trip trip = tripOptional.get();
@@ -55,6 +60,10 @@ public class TripRequestService {
             }
 
             if (trip.getStuffers().contains(currentUser())) {
+                throw new RuntimeException("You already in trip");
+            }
+
+            if (requestRepository.existsByTripIdAndStufferId(trip.getId(), currentUser().getId())) {
                 throw new RuntimeException("You already sent request to this trip");
             }
 
@@ -90,8 +99,10 @@ public class TripRequestService {
             if (request.getStatus() != TripRequest.TripRequestStatus.ACCEPTED) {
                 throw new RuntimeException("You can't cancel not accepted request");
             }
+            request.setStatus(TripRequest.TripRequestStatus.DELETED);
+            requestRepository.save(request);
+            tripRepository.deleteByStufferIdAndTripId(currentUser().getId(), tripId);
 
-            requestRepository.deleteById(request.getId());
             return;
         }
         throw new RuntimeException("Trip with id " + tripId + " doesn't exist");
@@ -111,7 +122,6 @@ public class TripRequestService {
             if (confirmation.getStatus() == TripRequest.TripRequestStatus.ACCEPTED) {
                 Trip trip = tripRequest.getTrip();
                 trip.getStuffers().add(tripRequest.getStuffer());
-                // todo: persist stuffer to trip
                 tripRepository.save(trip);
             }
             tripRequest.setStatus(confirmation.getStatus());

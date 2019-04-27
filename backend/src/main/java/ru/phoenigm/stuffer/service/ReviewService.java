@@ -38,7 +38,7 @@ public class ReviewService {
                 .driver(userService.getByUserId(reviewForm.getDriverId())
                         .orElseThrow(() -> new RuntimeException("Error while review creating")))
                 .reviewDate(LocalDateTime.now())
-                .trip(tripService.findById(reviewForm.getTripId())
+                .trip(tripService.getById(reviewForm.getTripId())
                         .orElseThrow(() -> new RuntimeException("Error while review creating")))
                 .build();
 

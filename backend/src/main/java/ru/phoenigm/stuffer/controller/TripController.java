@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.phoenigm.stuffer.domain.Trip;
 import ru.phoenigm.stuffer.domain.form.TripRegistrationForm;
 import ru.phoenigm.stuffer.domain.form.TripUpdateForm;
+import ru.phoenigm.stuffer.payload.TripDto;
 import ru.phoenigm.stuffer.service.TripService;
 
 import java.security.Principal;
@@ -20,8 +21,8 @@ public class TripController {
     private TripService tripService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Trip> trip(@PathVariable Long id) {
-        Optional<Trip> tripCandidate = tripService.findById(id);
+    public ResponseEntity<TripDto> trip(@PathVariable Long id) {
+        Optional<TripDto> tripCandidate = tripService.findById(id);
         return tripCandidate.isPresent() ?
                 ResponseEntity.ok(tripCandidate.get())
                 : ResponseEntity.notFound().build();
@@ -44,7 +45,7 @@ public class TripController {
 
     @PutMapping("/{id}")
     public Trip updateTrip(@PathVariable Long id, @RequestBody TripUpdateForm form, Principal principal) {
-        return tripService.updateById(id, form, principal);
+        return tripService.updateById(id, form);
     }
 
     @GetMapping("/all")
@@ -53,7 +54,12 @@ public class TripController {
     }
 
     @GetMapping("/my")
-    public List<Trip> myTrips(Principal principal) {
-        return tripService.getMyTrips(principal.getName());
+    public List<Trip> myTrips() {
+        return tripService.getMyTrips();
+    }
+
+    @GetMapping("/joined")
+    public List<Trip> joinedTrips() {
+        return tripService.getJoinedTrips();
     }
 }
