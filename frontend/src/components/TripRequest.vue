@@ -9,13 +9,19 @@
                         <v-flex>
                             <v-list-tile class="grow">
                                 <v-list-tile-avatar color="grey darken-3">
-                                    <router-link tag="img" :to="'/user/' + tripRequest.stuffer.id"
+                                    <router-link v-if="isMyRequest" tag="img" :to="'/user/' + tripRequest.driver.id"
+                                                 class="elevation-5"
+                                                 :src="tripRequest.driver.avatarUrl">
+                                    </router-link>
+                                    <router-link v-else tag="img" :to="'/user/' + tripRequest.stuffer.id"
                                                  class="elevation-5"
                                                  :src="tripRequest.stuffer.avatarUrl">
                                     </router-link>
                                 </v-list-tile-avatar>
                                 <v-list-tile-content>
-                                    <v-list-tile-title>{{tripRequest.stuffer.firstName}} {{tripRequest.stuffer.lastName}}
+                                    <v-list-tile-title v-if="isMyRequest">{{tripRequest.driver.firstName}} {{tripRequest.driver.lastName}}
+                                    </v-list-tile-title>
+                                    <v-list-tile-title v-else>{{tripRequest.stuffer.firstName}} {{tripRequest.stuffer.lastName}}
                                     </v-list-tile-title>
                                 </v-list-tile-content>
                             </v-list-tile>
@@ -29,10 +35,10 @@
 
                 <v-flex shrink>
                     <v-spacer/>
-                    <v-btn fab dark color="green" @click="processRequest(tripRequest.id, 'ACCEPTED')">
+                    <v-btn v-if="!isMyRequest" fab dark color="green" @click="processRequest(tripRequest.id, 'ACCEPTED')" >
                         <v-icon dark>fas fa-check</v-icon>
                     </v-btn>
-                    <v-btn fab dark color="red" @click="processRequest(tripRequest.id, 'DECLINED')">
+                    <v-btn v-if="!isMyRequest" fab dark color="red" @click="processRequest(tripRequest.id, 'DECLINED')">
                         <v-icon dark>fas fa-times</v-icon>
                     </v-btn>
                 </v-flex>
@@ -51,7 +57,7 @@
     import {AXIOS} from '../api/http-common'
     export default {
         name: "TripRequest",
-        props: ['tripRequest'],
+        props: ['tripRequest', 'isMyRequest'],
 
         methods: {
             processRequest(id, status) {

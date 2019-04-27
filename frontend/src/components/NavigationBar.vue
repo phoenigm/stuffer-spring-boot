@@ -86,12 +86,6 @@
                                 {{ item.header }}
                             </v-subheader>
 
-                            <v-divider
-                                    v-else-if="item.divider"
-                                    :key="index"
-                                    :inset="item.inset"
-                            ></v-divider>
-
                             <v-list-tile
                                     v-else
                                     :key="item.title"
@@ -112,14 +106,41 @@
                 </div>
             </v-menu>
 
-            <v-btn icon large @click="logout">
-                <v-avatar size="32px">
-                    <img
-                            :src="user.avatarUrl"
-                            :alt="user.firstName"
+
+            <v-menu bottom left>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon large v-on="on">
+                        <v-avatar size="32px">
+                            <img
+                                    :src="user.avatarUrl"
+                                    :alt="user.firstName"
+                            >
+                        </v-avatar>
+                    </v-btn>
+                </template>
+
+                <v-list dense>
+                    <v-list-tile
+                            v-for="(item, i) in menuItems"
+                            :key="i"
+                            @click="goToPage(item.page)"
                     >
-                </v-avatar>
-            </v-btn>
+                        <v-divider
+                                v-if="item.divider"
+                                :key="index"
+                                :inset="item.inset"
+                        ></v-divider>
+                        <v-list-tile-action>
+                            <v-icon>{{ item.icon }}</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title class="grey--text">
+                                {{ item.text }}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
 
         </v-toolbar>
     </div>
@@ -133,20 +154,18 @@
                 menu: false,
                 drawer: null,
                 items: [
-                    {heading: 'Personal'},
-                    {icon: 'fas fa-user', text: 'Profile', page: '/profile'},
-                    {icon: 'fas fa-comments', text: 'Messages', page: '/messages'},
-                    {divider: true},
                     {heading: 'Activity'},
                     {icon: 'fas fa-car', text: 'My trips', page: '/trips'},
                     {icon: 'fas fa-suitcase', text: 'All trips', page: '/catalogue'},
                     {icon: 'fas fa-plus', text: 'Add new trip', page: '/new'},
                     {divider: true},
                     {icon: 'fas fa-cog', text: 'Settings', page: '/settings'},
-                    {icon: 'fas fa-sign-out-alt', text: 'Quit', page: '/quit'},
                 ],
 
-                user: this.$store.getters['getUser'],
+                menuItems: [
+                    {icon: 'fas fa-user', text: 'Profile', page: '/profile'},
+                    {icon: 'fas fa-sign-out-alt', text: 'Quit', page: '/quit'},
+                ],
 
                 notifications: [
                     {header: 'Today'},
@@ -168,12 +187,15 @@
                         subtitle: "<span class='text--primary'>Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?"
                     }
                 ],
-
-                props: {
-                    source: String
-                },
             }
         },
+
+        computed: {
+            user() {
+                return this.$store.getters['getUser'];
+            }
+        },
+
         methods: {
             goToPage(page) {
                 if (page === '/quit') {
@@ -184,6 +206,12 @@
             logout() {
                 this.$store.dispatch('logout');
                 this.$router.replace('/login');
+            }
+        },
+
+        beforeMount() {
+            if (this.$store.state.user.avatarUrl === undefined) {
+                this.$store.dispatch('myProfile')
             }
         }
     }

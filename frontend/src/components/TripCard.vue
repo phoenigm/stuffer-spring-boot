@@ -12,8 +12,8 @@
 
         <v-card-text class=" font-weight-bold" :class="text">
 
-            <v-layout row>
-                <v-flex>
+            <v-layout row wrap>
+                <v-flex md6 xs12>
                     <v-layout column>
                         <v-flex>
                             <span>Departure date:  {{ trip.departureDate }}</span>
@@ -24,7 +24,7 @@
                     </v-layout>
                 </v-flex>
 
-                <v-flex>
+                <v-flex md6 xs12>
                     <v-layout column>
                         <v-flex>
                             <span>From: {{ trip.departurePoint }}</span>
@@ -64,7 +64,7 @@
 
 <script>
     export default {
-        name: "ChallengeCard",
+        name: "TripCard",
         props: ['trip', 'text', 'color', 'author'],
     }
 </script>
