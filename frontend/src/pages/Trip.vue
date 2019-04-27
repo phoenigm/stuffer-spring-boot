@@ -142,7 +142,7 @@
                                             </v-layout>
                                         </v-flex>
 
-                                        <v-flex v-if="trip.stuffers.length !== 0">
+                                        <v-flex v-if="trip.stuffers !== undefined && trip.stuffers.length !== 0">
                                             <v-autocomplete
                                                     v-model="tripForm.stuffers"
                                                     :disabled="!edit"
@@ -269,9 +269,9 @@
 
                                                         <v-flex my-2>
                                                             Driver rating:
-                                                            <span class="grey--text text--lighten-2 caption mr-2">{{ profile.driverRating }}</span>
+                                                            <span class="grey--text text--lighten-2 caption mr-2">{{ trip.author.driverRating }}</span>
                                                             <v-rating
-                                                                    v-model="profile.driverRating"
+                                                                    v-model="trip.author.driverRating"
                                                                     background-color="white"
                                                                     color="yellow accent-4"
                                                                     readonly
@@ -283,19 +283,19 @@
                                                         </v-flex>
 
                                                         <v-flex my-2>
-                                                            Number of trips: {{ profile.totalTrips}}
+                                                            Number of trips: {{ trip.author.totalTrips}}
                                                         </v-flex>
 
                                                         <v-flex my-2>
-                                                            Number of reviews: {{profile.reviewsCount}}
+                                                            Number of reviews: {{trip.author.reviewsCount}}
                                                         </v-flex>
 
                                                         <v-flex my-2>
-                                                            Email: {{ profile.email}}
+                                                            Email: {{ trip.author.email}}
                                                         </v-flex>
 
                                                         <v-flex my-2>
-                                                            Phone number: {{ profile.phoneNumber}}
+                                                            Phone number: {{ trip.author.phoneNumber}}
                                                         </v-flex>
 
                                                     </v-layout>
@@ -314,26 +314,25 @@
                                     </v-card-actions>
                                 </v-card>
                             </v-flex>
-                            <v-flex v-if="isAllowReviewDriver">
-                                <v-btn color="primary">Review</v-btn>
+                            <v-flex v-if="isReviewable">
                                 <v-dialog v-model="reviewDialog" persistent max-width="500">
                                     <template v-slot:activator="{ on }">
-                                        <v-btn color="primary" dark v-on="on">Request</v-btn>
+                                        <v-btn color="primary" dark v-on="on">Review</v-btn>
                                     </template>
-                                    <v-card>
+                                    <v-card dark color="purple">
                                         <v-form>
                                             <v-card-title class="headline">
                                                 <v-layout row justify-center align-center>
                                                     <v-flex shrink mr-2>
                                                         <v-avatar>
                                                             <img
-                                                                    :src="user.avatarUrl"
-                                                                    :alt="user.firstName"
+                                                                    :src="trip.author.avatarUrl"
+                                                                    :alt="trip.author.firstName"
                                                             >
                                                         </v-avatar>
                                                     </v-flex>
                                                     <v-flex>
-                                                        {{user.firstName}} {{user.lastName}}
+                                                        {{trip.author.firstName}} {{trip.author.lastName}}
                                                     </v-flex>
                                                 </v-layout>
                                             </v-card-title>
@@ -355,20 +354,19 @@
 
                                                     <v-flex>
                                                         <v-textarea
+                                                                v-model="reviewForm.review"
                                                                 box
                                                                 label="Review"
                                                                 auto-grow
-                                                                readonly
-                                                                :value="reviewForm.review"
                                                         ></v-textarea>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer></v-spacer>
-                                                <v-btn color="green darken-1" flat @click="dialog = false">Disagree
+                                                <v-btn color="yellow darken-1" dark flat @click="reviewDialog = !reviewDialog">Cancel
                                                 </v-btn>
-                                                <v-btn color="green darken-1" flat @click="dialog = false">Agree</v-btn>
+                                                <v-btn color="primary darken-1" dark  @click="sendReview">Review</v-btn>
                                             </v-card-actions>
                                         </v-form>
                                     </v-card>
@@ -378,7 +376,7 @@
                             <v-flex v-if="isStuffed && !isCompleted">
                                 <v-btn color="red" dark @click="cancelTripRequest">Refuse to trip</v-btn>
                             </v-flex>
-                            <v-flex v-else-if="isRequestable">
+                            <v-flex v-if="isRequestable">
                                 <v-dialog
                                         v-model="request"
                                         width="500"
@@ -454,7 +452,7 @@
     import Review from "../components/Review";
 
     export default {
-        name: "Challenge",
+        name: "Trip",
         components: {Review, NavigationBar},
         props: {
             disabled: Boolean,
@@ -465,27 +463,30 @@
                 return this.isMyTrip && !this.isCompleted;
             },
             isMyTrip: function () {
-                return this.$store.state.user.id === this.profile.id
+                return this.$store.state.user.id === this.trip.author.id
             },
             isCompleted: function () {
                 return this.trip.status === 'COMPLETED'
             },
             isStuffed: function () {
                 const userId = this.$store.state.user.id;
-                console.log(userId);
                 for (let i = 0; i < this.trip.stuffers.length; i++) {
-                    console.log(this.trip.stuffers[i].id);
                     if (this.trip.stuffers[i].id === userId) {
                         return true
                     }
                 }
                 return false;
             },
-            isAllowReviewDriver: function () {
+            isReviewable: function () {
                 return this.isStuffed && this.isCompleted;
             },
             isRequestable: function () {
+                console.log('isRE ' + this.trip.status === 'READY' && !this.isMyTrip)
                 return this.trip.status === 'READY' && !this.isMyTrip
+            },
+
+            user() {
+                return this.$store.getters.getUser;
             }
         },
 
@@ -498,10 +499,11 @@
                 reviewDialog: false,
 
                 reviewForm: {
-                    rating: '',
-                    review: ''
+                    driverId: null,
+                    tripId: null,
+                    rating: 0,
+                    review: null
                 },
-
                 requestForm: {
                     tripId: null,
                     requestText: null,
@@ -511,7 +513,6 @@
                 tripForm: {},
 
                 trip: {},
-                profile: {},
 
                 statusList: [
                     {status: 'IN_TRIP', title: 'In trip', icon: 'fas fa-car'},
@@ -524,8 +525,6 @@
 
 
         methods: {
-
-
             remove(item) {
                 if (!this.edit) return;
                 let index = -1;
@@ -595,19 +594,21 @@
                     }).catch(error => {
                     console.log(error);
                 })
-            }
+            },
 
+            sendReview() {
+                this.reviewDialog = !this.reviewDialog;
+                this.reviewForm.driverId = this.trip.author.id;
+                this.reviewForm.tripId = this.trip.id;
+
+                AXIOS.post('/api/review', this.reviewForm)
+                    .then(response => {
+                    })
+            }
         },
 
-        mounted() {
-            AXIOS.get('/api/profile')
-                .then(response => {
-                    this.$store.commit('setUser', response.data);
-                }).catch(error => {
-                console.log(error);
-            });
-
-            AXIOS.get('/api/trip/' + this.$route.params.tripId)
+        async beforeMount() {
+            await AXIOS.get('/api/trip/' + this.$route.params.tripId)
                 .then(response => {
                     console.log(response.data);
                     this.stuffers = response.data.stuffers;
@@ -624,15 +625,9 @@
                         price: this.trip.price,
                         status: this.trip.status
                     }
-
-                    AXIOS.get('/api/profile/' + this.trip.author.id)
-                        .then(response => {
-                            this.profile = response.data;
-                        })
-
                 }).catch(error => {
-                console.log(error)
-            })
+                    console.log(error)
+                });
         }
     }
 </script>

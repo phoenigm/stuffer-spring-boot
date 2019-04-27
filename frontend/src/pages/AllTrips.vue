@@ -8,7 +8,7 @@
                     <v-layout row wrap>
 
                         <v-flex v-for="trip in trips" :key="trip.id" xs12>
-                            <ChallengeCard :trip="trip" :author="trip.author" :color="'purple'" :text="'headline'"/>
+                            <TripCard :trip="trip" :author="trip.author" :color="'purple'" :text="'headline'"/>
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -20,27 +20,28 @@
 
 <script>
     import NavigationBar from "../components/NavigationBar";
-    import ChallengeCard from "../components/ChallengeCard";
+    import TripCard from "../components/TripCard";
     import {AXIOS} from "../api/http-common";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "AllChallenges",
-        components: {NavigationBar, ChallengeCard},
+        components: {NavigationBar, TripCard},
 
-        data() {
-          return {
-              trips: this.$store.getters['getTrips']
-          }
+        computed: {
+            ...mapGetters({
+                trips: 'getTrips'
+            })
         },
 
         mounted() {
             AXIOS.get('/api/trip/all')
                 .then(response => {
-                    console.log(response.data)
+                    console.log(response.data);
                     this.$store.commit('setTrips', response.data);
                     this.trips = response.data;
                 }).catch(error => {
-                    console.log(error);
+                console.log(error);
             })
         }
     }

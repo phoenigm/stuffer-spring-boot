@@ -255,7 +255,7 @@
                                         <v-layout align-center justify-center row wrap>
                                             <v-flex>
                                                 Driver rating:
-                                                <span class="grey--text text--lighten-2 caption mr-2">{{ user.driverRating === null ? '(nobody yet rate this driver)' : user.driverRating  }}</span>
+                                                <span class="grey--text text--lighten-2 caption mr-2">{{ user.driverRating === null ? '(nobody yet rate you)' : user.driverRating  }}</span>
                                                 <v-rating
                                                         v-model="user.driverRating"
                                                         background-color="white"
@@ -299,7 +299,7 @@
                                     <v-card-text>
                                         <v-layout column subheading>
                                             <v-flex xs12 my-1 v-for="trip in user.lastTrips">
-                                                <ChallengeCard :trip="trip" :text="'subheading'" :color="'purple'"/>
+                                                <TripCard :trip="trip" :text="'subheading'" :color="'purple'"/>
                                             </v-flex>
 
                                         </v-layout>
@@ -327,7 +327,7 @@
 </template>
 
 <script>
-    import ChallengeCard from "../components/ChallengeCard"
+    import TripCard from "../components/TripCard"
     import Footer from "../components/Footer";
     import NavigationBar from "../components/NavigationBar";
     import {AXIOS} from "../api/http-common";
@@ -335,27 +335,19 @@
 
     export default {
         name: "Profile",
-        components: {NavigationBar, Footer, ChallengeCard, AvatarCropper},
+        components: {NavigationBar, Footer, TripCard},
         data() {
             return {
-
-                reviews: [],
-                statistics: [],
-
                 dialog: false,
                 hasSaved: false,
                 isEditing: null,
-                model: null,
-                loader: null,
                 uploadAvatar: false,
                 updateProfileMessage: '',
-                response: null,
 
                 imageName: '',
                 imageUrl: '',
                 imageFile: '',
 
-                user: null,
 
                 updateProfileForm: {
                     firstName: null,
@@ -369,29 +361,26 @@
             }
         },
         watch: {
-            loader() {
-                const load = this.loader;
-                this[load] = !this[load];
-                setTimeout(() => (this[load] = false), 3000)
-                this.loader = null;
+        },
 
+        computed: {
+            user() {
+                return this.$store.getters.getUser;
             },
-
+            reviews() {
+                return this.$store.getters.getUser['lastReviews'];
+            },
+            statistics() {
+                const stats = [];
+                stats.push({title: 'Total trips', value: this.user.totalTrips, icon: ''})
+                stats.push({title: 'Reviews', value: this.user.reviewsCount, icon: ''})
+                return stats;
+            }
         },
 
         methods: {
             uploadAvatarToServer(file) {
-                const formData  = new FormData();
-                formData.append('avatar', file, this.imageName);
-
-                AXIOS.put('/api/profile', formData)
-                    .then(response => {
-                        this.user.avatarUrl = response.data.url;
-                        console.log(response.data);
-
-                    }).catch(error => {
-                    console.log(error)
-                })
+                this.$store.dispatch('uploadAvatar', file)
             },
 
             save() {
@@ -409,11 +398,6 @@
                         this.hasSaved = true;
                         this.updateProfileMessage = 'Error while updating your profile'
                     })
-            },
-
-            setStatistics(totalTrips, reviewsCount) {
-                this.statistics.push({title: 'Total trips', value: totalTrips, icon: ''})
-                this.statistics.push({title: 'Reviews', value: reviewsCount, icon: ''},)
             },
 
             pickFile() {
@@ -443,17 +427,7 @@
         },
 
         mounted() {
-            AXIOS.get('/api/profile')
-                .then(response => {
-                    this.user = response.data;
-                    this.$store.commit('setUser', response.data);
-                    this.setStatistics(this.user.totalTrips, this.user.reviewsCount)
-                    this.reviews = response.data.lastReviews;
-                }).catch(error => {
-
-                console.log(error);
-                // this.$store.dispatch('logout');
-            })
+            this.$store.dispatch('myProfile');
         }
     }
 </script>

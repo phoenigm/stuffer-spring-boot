@@ -239,7 +239,7 @@
                                 <v-card-text>
                                     <v-layout column subheading>
                                         <v-flex xs12 my-1 v-for="trip in user.lastTrips" >
-                                            <ChallengeCard :trip="trip"  :text="'subheading'" :color="'purple'" />
+                                            <TripCard :trip="trip" :text="'subheading'" :color="'purple'" />
                                         </v-flex>
 
                                     </v-layout>
@@ -269,12 +269,12 @@
 <script>
     import NavigationBar from "../components/NavigationBar";
     import {AXIOS} from "../api/http-common";
-    import ChallengeCard from "../components/ChallengeCard";
+    import TripCard from "../components/TripCard";
     import ReviewDialog from "../components/ReviewDialog";
 
     export default {
         name: "User",
-        components: {ReviewDialog, ChallengeCard, NavigationBar},
+        components: {ReviewDialog, TripCard, NavigationBar},
 
         data() {
             return {
