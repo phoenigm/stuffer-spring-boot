@@ -21,28 +21,21 @@
 <script>
     import NavigationBar from "../components/NavigationBar";
     import TripCard from "../components/TripCard";
-    import {AXIOS} from "../api/http-common";
     import {mapGetters} from "vuex";
 
     export default {
-        name: "AllChallenges",
+        name: "AllTrips",
         components: {NavigationBar, TripCard},
 
         computed: {
-            ...mapGetters({
-                trips: 'getTrips'
-            })
+            trips() {
+                return this.$store.getters.getTrips;
+            }
+
         },
 
         mounted() {
-            AXIOS.get('/api/trip/all')
-                .then(response => {
-                    console.log(response.data);
-                    this.$store.commit('setTrips', response.data);
-                    this.trips = response.data;
-                }).catch(error => {
-                console.log(error);
-            })
+            this.$store.dispatch('loadTrips');
         }
     }
 </script>

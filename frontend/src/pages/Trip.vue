@@ -487,6 +487,10 @@
 
             user() {
                 return this.$store.getters.getUser;
+            },
+
+            trip() {
+
             }
         },
 

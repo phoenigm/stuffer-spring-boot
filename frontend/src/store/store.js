@@ -70,7 +70,11 @@ let store = new Vuex.Store({
 
             const response = await AXIOS.put('/api/profile', formData);
             commit('changeAvatarUrl', response.data.url);
-        }
+        },
+        loadTrips: async ({commit}) => {
+            const response = await AXIOS.get('/api/trip/all');
+            commit('setTrips', response.data)
+        },
     }
 });
 
