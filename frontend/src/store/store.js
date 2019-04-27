@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {AXIOS} from '../api/http-common'
 
 Vue.use(Vuex);
 
@@ -7,6 +8,8 @@ let store = new Vuex.Store({
     state: {
         token: localStorage.getItem('token') || '',
         user: {},
+        myRequests: [],
+        requestsForMe: [],
         trips: [],
         myTrips: []
     },
@@ -15,7 +18,9 @@ let store = new Vuex.Store({
         getUser: state => state.user,
         token: state => state.token,
         getTrips: state => state.trips,
-        getMyTrips: state => state.myTrips
+        getMyTrips: state => state.myTrips,
+        getMyRequests: state => state.myRequests,
+        getRequestsForMe: state => state.requestsForMe,
     },
     mutations: {
         setUser(state, payload) {
@@ -28,20 +33,43 @@ let store = new Vuex.Store({
             state.trips = payload
         },
         setMyTrips(state, payload) {
-          state.myTrips = payload
+            state.myTrips = payload
+        },
+        setMyRequests(state, payload) {
+            state.myRequests = payload;
+        },
+        setRequestsForMe(state, payload) {
+            state.requestsForMe = payload;
         },
         clearToken(state) {
             state.token = '';
             localStorage.removeItem('refresh_token');
             localStorage.removeItem('token')
         },
+        changeAvatarUrl(state, payload) {
+            state.user.avatarUrl = payload;
+        }
     },
     actions: {
         logout({commit}) {
             commit('clearToken');
         },
-        myProfile({commit}, payload) {
-            commit('setUser', payload)
+        async myProfile({commit}) {
+            const response = await AXIOS.get('/api/profile');
+            commit('setUser', response.data);
+        },
+        loadMyTrips: async ({commit}) => {
+            const response = await AXIOS.get('/api/trip/my');
+            if (response.status === 200) {
+                commit('setMyTrips', response.data);
+            }
+        },
+        uploadAvatar: async ({commit}, file) => {
+            const formData  = new FormData();
+            formData.append('avatar', file);
+
+            const response = await AXIOS.put('/api/profile', formData);
+            commit('changeAvatarUrl', response.data.url);
         }
     }
 });
