@@ -11,7 +11,8 @@ let store = new Vuex.Store({
         myRequests: [],
         requestsForMe: [],
         trips: [],
-        myTrips: []
+        myTrips: [],
+        trip: {},
     },
     getters: {
         isAuthenticated: state => !!state.token,
@@ -21,6 +22,7 @@ let store = new Vuex.Store({
         getMyTrips: state => state.myTrips,
         getMyRequests: state => state.myRequests,
         getRequestsForMe: state => state.requestsForMe,
+        getTrip: state => state.trip,
     },
     mutations: {
         setUser(state, payload) {
@@ -48,6 +50,9 @@ let store = new Vuex.Store({
         },
         changeAvatarUrl(state, payload) {
             state.user.avatarUrl = payload;
+        },
+        setTrip(state, payload) {
+            state.trip = payload
         }
     },
     actions: {

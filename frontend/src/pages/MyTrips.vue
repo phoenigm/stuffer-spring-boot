@@ -63,7 +63,7 @@
     import TripRequest from "../components/TripRequest";
 
     export default {
-        name: "MyChallenges",
+        name: "MyTrips",
         components: {TripRequest, TripCard, NavigationBar},
 
         data() {

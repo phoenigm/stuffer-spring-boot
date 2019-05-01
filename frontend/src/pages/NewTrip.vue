@@ -151,7 +151,7 @@
     import {AXIOS} from "../api/http-common";
 
     export default {
-        name: "NewChallenge",
+        name: "NewTrip",
         components: {NavigationBar},
         data() {
 

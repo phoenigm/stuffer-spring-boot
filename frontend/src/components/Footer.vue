@@ -42,7 +42,7 @@
                     white--text
                     xs12
             >
-                &copy; 2019 — <strong>Challenger Application</strong>
+                &copy; 2019 — <strong>Stuffer</strong>
             </v-flex>
         </v-layout>
     </v-footer>
