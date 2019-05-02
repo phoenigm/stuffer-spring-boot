@@ -53,8 +53,18 @@ public class TripService {
         return tripRepository.findAllByStuffersEmail(currentUser().getEmail());
     }
 
-    public List<Trip> getAllSuitableTrips(LocalDateTime departureDate) {
-        return tripRepository.findAllByDepartureDate(departureDate);
+    @Transactional
+    public List<Trip> searchTrips(String from, String to) {
+        if (from != null && to != null) {
+            return tripRepository.findAllByDepartureLocalityNameIgnoreCaseContainingAndDeliveryLocalityNameIgnoreCaseContaining(from, to);
+        }
+        if (from != null) {
+            return tripRepository.findAllByDepartureLocalityNameIgnoreCaseContaining(from);
+        } else if (to != null) {
+            return tripRepository.findAllByDeliveryLocalityNameIgnoreCaseContaining(to);
+        } else {
+            throw new RuntimeException("From and to params mustn't be bull");
+        }
     }
 
     @Transactional
