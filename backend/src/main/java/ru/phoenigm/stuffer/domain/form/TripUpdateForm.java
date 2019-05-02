@@ -11,9 +11,8 @@ import ru.phoenigm.stuffer.domain.Trip;
 public class TripUpdateForm {
     private String arrivalDate;
     private String departureDate;
-
-    private String departurePoint;
-    private String deliveryPoint;
+    private String departureAddress;
+    private String deliveryAddress;
 
     private Integer price;
     private String info;

@@ -30,6 +30,9 @@ public class TripService {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private LocalityService localityService;
+
     private User currentUser() {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         return (User) userDetailsService.loadUserByUsername(principal.getName());
@@ -55,16 +58,18 @@ public class TripService {
     }
 
     @Transactional
-    public Trip save(TripRegistrationForm registrationForm) {
+    public Trip save(TripRegistrationForm form) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         Trip trip = Trip.builder()
-                .arrivalDate(LocalDateTime.parse(registrationForm.getArrivalDate(), formatter))
-                .departureDate(LocalDateTime.parse(registrationForm.getDepartureDate(), formatter))
-                .departurePoint(registrationForm.getDeparturePoint())
-                .deliveryPoint(registrationForm.getDeliveryPoint())
-                .price(registrationForm.getPrice())
-                .info(registrationForm.getInfo())
+                .arrivalDate(LocalDateTime.parse(form.getArrivalDate(), formatter))
+                .departureDate(LocalDateTime.parse(form.getDepartureDate(), formatter))
+                .departureAddress(form.getDepartureAddress())
+                .deliveryAddress(form.getDeliveryAddress())
+                .deliveryLocality(localityService.getLocalityById(form.getDeliveryLocalityId()))
+                .departureLocality(localityService.getLocalityById(form.getDepartureLocalityId()))
+                .price(form.getPrice())
+                .info(form.getInfo())
                 .publicationDate(LocalDateTime.now())
                 .author(currentUser())
                 .status(Trip.TripStatus.READY)
@@ -86,8 +91,8 @@ public class TripService {
 
             trip.setArrivalDate(LocalDateTime.parse(form.getArrivalDate(), formatter));
             trip.setDepartureDate(LocalDateTime.parse(form.getDepartureDate(), formatter));
-            trip.setDeliveryPoint(form.getDeliveryPoint());
-            trip.setDeparturePoint(form.getDeparturePoint());
+            trip.setDeliveryAddress(form.getDeliveryAddress());
+            trip.setDepartureAddress(form.getDepartureAddress());
             trip.setPrice(form.getPrice());
             trip.setStatus(form.getStatus());
             trip.setInfo(form.getInfo());

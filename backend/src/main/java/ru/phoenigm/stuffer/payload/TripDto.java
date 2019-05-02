@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
+import ru.phoenigm.stuffer.domain.Locality;
 import ru.phoenigm.stuffer.domain.Review;
 import ru.phoenigm.stuffer.domain.Trip;
 
@@ -29,8 +29,11 @@ public class TripDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime publicationDate;
 
-    private String departurePoint;
-    private String deliveryPoint;
+    private Locality departureLocality;
+    private String departureAddress;
+    private Locality deliveryLocality;
+    private String deliveryAddress;
+
     private Trip.TripStatus status;
     private Integer price;
     private String info;
@@ -44,8 +47,10 @@ public class TripDto {
                 .arrivalDate(trip.getArrivalDate())
                 .departureDate(trip.getDepartureDate())
                 .publicationDate(trip.getPublicationDate())
-                .departurePoint(trip.getDeparturePoint())
-                .deliveryPoint(trip.getDeliveryPoint())
+                .departureAddress(trip.getDepartureAddress())
+                .departureLocality(trip.getDepartureLocality())
+                .deliveryAddress(trip.getDeliveryAddress())
+                .deliveryLocality(trip.getDeliveryLocality())
                 .status(trip.getStatus())
                 .price(trip.getPrice())
                 .info(trip.getInfo())

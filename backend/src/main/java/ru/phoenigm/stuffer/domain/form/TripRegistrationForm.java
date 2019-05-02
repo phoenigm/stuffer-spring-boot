@@ -13,8 +13,10 @@ public class TripRegistrationForm {
     private String arrivalDate;
     private String departureDate;
 
-    private String departurePoint;
-    private String deliveryPoint;
+    private Long departureLocalityId;
+    private Long deliveryLocalityId;
+    private String departureAddress;
+    private String deliveryAddress;
 
     private Integer price;
     private String info;

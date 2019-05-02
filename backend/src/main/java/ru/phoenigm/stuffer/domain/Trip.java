@@ -32,8 +32,12 @@ public class Trip {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime publicationDate;
 
-    private String departurePoint;
-    private String deliveryPoint;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Locality departureLocality;
+    private String departureAddress;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Locality deliveryLocality;
+    private String deliveryAddress;
 
     @Enumerated(EnumType.STRING)
     private TripStatus status;
