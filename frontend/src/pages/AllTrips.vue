@@ -7,41 +7,37 @@
                 <v-container fluid grid-list-sm>
                     <v-layout row>
                         <v-flex xs6>
-                            <v-autocomplete
+                            <v-text-field
+                                    v-on:input="searchDepartureLocality"
                                     v-model="departureLocality"
                                     :loading="isLoading1"
-                                    :search-input.sync="searchDepartureLocality"
+
                                     hide-no-data
                                     hide-selected
                                     label="Departure locality"
                                     placeholder="Start typing locality"
                                     return-object
-                            ></v-autocomplete>
+                            ></v-text-field>
                         </v-flex>
                         <v-flex xs6>
-                            <v-autocomplete
+                            <v-text-field
+                                    v-on:input="searchDeliveryLocality"
                                     v-model="deliveryLocality"
                                     :loading="isLoading3"
-                                    :search-input.sync="searchDeliveryLocality"
                                     hide-no-data
                                     hide-selected
                                     label="Delivery locality"
                                     placeholder="Start typing locality"
                                     return-object
-                            ></v-autocomplete>
+                            ></v-text-field>
                         </v-flex>
                     </v-layout>
                     <v-layout row wrap>
-                        <v-flex v-if="searchResults.length !== 0" v-for="trip in searchResults" :key="trip.id" xs12>
+                        <v-flex v-for="trip in searchResults" :key="trip.id" xs12>
                             <TripCard :trip="trip" :author="trip.author" :color="'purple'" :text="'headline'"/>
                         </v-flex>
-                        <v-flex v-else>
-                            Ничего не найдено
-                        </v-flex>
-                    </v-layout>
-                    <v-layout row wrap>
-                        <v-flex v-for="trip in trips" :key="trip.id" xs12>
-                            <TripCard :trip="trip" :author="trip.author" :color="'purple'" :text="'headline'"/>
+                        <v-flex v-if="searchResults.length === 0">
+                            <h4 class="title">Nothing was found by your parameters </h4>
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -63,13 +59,10 @@
 
         data() {
             return {
-                departureLocality: null,
-                deliveryLocality: null,
-
                 searchResults: [],
+                deliveryLocality: null,
+                departureLocality: null,
 
-                searchDepartureLocality: null,
-                searchDeliveryLocality: null,
                 isLoading1: false,
                 isLoading3: false,
             }
@@ -80,13 +73,12 @@
                 return this.$store.getters.getTrips;
             },
         },
-
-        watch: {
-            searchDeliveryLocality(val) {
+        methods: {
+            searchDeliveryLocality() {
                 if (this.isLoading3) return;
                 this.isLoading3 = true;
 
-                AXIOS.get(`/api/trip/search?${this.departureLocality === null ? '' : 'from=' + this.departureLocality + '&'}to=${val}`)
+                AXIOS.get(`/api/trip/search?${this.departureLocality === null ? '' : 'from=' + this.departureLocality + '&'}to=${this.deliveryLocality}`)
                     .then(res => {
                         this.searchResults = res.data;
                     })
@@ -95,11 +87,11 @@
                     .finally(() => (this.isLoading3 = false))
             },
 
-            searchDepartureLocality(val) {
+            searchDepartureLocality() {
                 if (this.isLoading1) return;
                 this.isLoading1 = true;
 
-                AXIOS.get(`/api/trip/search?from=${val}${this.deliveryLocality === null ? '' : '&to=' + this.deliveryLocality}`)
+                AXIOS.get(`/api/trip/search?from=${this.departureLocality}${this.deliveryLocality === null ? '' : '&to=' + this.deliveryLocality}`)
                     .then(res => {
                         this.searchResults = res.data;
                     })
