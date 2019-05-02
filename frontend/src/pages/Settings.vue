@@ -2,52 +2,6 @@
     <v-app>
         <NavigationBar/>
 
-        <v-container>
-            <v-card
-                    color="red lighten-2"
-                    dark
-            >
-                <v-card-title class="headline red lighten-3">
-                    Search for Public APIs
-                </v-card-title>
-                <v-card-text>
-                    <v-autocomplete
-                            v-model="model1"
-                            :items="regions"
-                            :loading="isLoading1"
-                            :search-input.sync="search1"
-                            color="white"
-                            hide-no-data
-                            hide-selected
-                            item-text="Description"
-                            item-value="API"
-                            label="Public APIs"
-                            placeholder="Start typing to Search"
-                            prepend-icon="mdi-database-search"
-                            return-object
-                    ></v-autocomplete>
-
-                    <v-autocomplete
-                            v-model="model"
-                            :items="localities"
-                            :loading="isLoading"
-                            :search-input.sync="search"
-                            color="white"
-                            hide-no-data
-                            hide-selected
-                            item-text="Description"
-                            item-value="API"
-                            label="Public APIs"
-                            placeholder="Start typing to Search"
-                            prepend-icon="mdi-database-search"
-                            return-object
-                    ></v-autocomplete>
-                </v-card-text>
-
-            </v-card>
-        </v-container>
-
-
     </v-app>
 </template>
 
