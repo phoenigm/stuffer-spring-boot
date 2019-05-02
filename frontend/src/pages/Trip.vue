@@ -23,33 +23,108 @@
                             <v-form>
                                 <v-container>
                                     <v-layout column justify-center wrap>
-                                        <v-flex>
+                                        <v-flex v-if="!edit">
+                                            <v-timeline>
+                                                <v-timeline-item
+                                                        color="red lighten-2"
+                                                        fill-dot
+                                                        right
+                                                >
+                                                    <v-card>
+                                                        <v-card-title class="red lighten-2">
+                                                            <v-icon
+                                                                    dark
+                                                                    size="42"
+                                                                    class="mr-3"
+                                                            >
+                                                                mdi-magnify
+                                                            </v-icon>
+                                                            <h2 class="headline white--text font-weight-light">
+                                                                Departure</h2>
+                                                        </v-card-title>
+                                                        <v-container>
+                                                            <v-layout column>
+                                                                <v-flex>
+                                                                    <v-icon small>fas fa-map-marked-alt</v-icon>
+                                                                    {{trip.departureLocality.region.name}},
+                                                                    {{trip.departureLocality.name}}
+                                                                </v-flex>
+                                                                <v-flex>
+                                                                    <v-icon small>fas fa-map-marker-alt</v-icon>
+                                                                    {{trip.departureAddress}}
+                                                                </v-flex>
+                                                                <v-flex>
+                                                                    <v-icon small>fas fa-calendar</v-icon>
+                                                                    {{trip.departureDate}}
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-container>
+                                                    </v-card>
+                                                </v-timeline-item>
+
+                                                <v-timeline-item
+                                                        color="amber lighten-1"
+                                                        fill-dot
+                                                        left
+                                                        small
+                                                >
+                                                    <v-card>
+                                                        <v-card-title class="amber lighten-1 justify-end">
+                                                            <h2 class="headline mr-3 white--text font-weight-light">
+                                                                Delivery</h2>
+                                                            <v-icon
+                                                                    dark
+                                                                    size="42"
+                                                            >mdi-home-outline
+                                                            </v-icon>
+                                                        </v-card-title>
+                                                        <v-container>
+                                                            <v-layout column>
+                                                                <v-flex>
+                                                                    <v-icon small>fas fa-map-marked-alt</v-icon>
+                                                                    {{trip.deliveryLocality.region.name}},
+                                                                    {{trip.deliveryLocality.name}}
+                                                                </v-flex>
+                                                                <v-flex>
+                                                                    <v-icon small>fas fa-map-marker-alt</v-icon>
+                                                                    {{trip.deliveryAddress}}
+                                                                </v-flex>
+                                                                <v-flex>
+                                                                    <v-icon small>fas fa-calendar-check</v-icon>
+                                                                    {{trip.arrivalDate}}
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </v-container>
+                                                    </v-card>
+                                                </v-timeline-item>
+                                            </v-timeline>
+                                        </v-flex>
+                                        <v-flex v-if="edit">
                                             <v-text-field
-                                                    v-model="tripForm.departurePoint"
+                                                    v-model="tripForm.departureAddress"
                                                     box
                                                     :readonly="!edit"
                                                     color="blue-grey lighten-2"
                                                     label="Departure point"
                                             ></v-text-field>
                                         </v-flex>
-                                        <v-flex xs12>
+                                        <v-flex v-if="edit">
                                             <v-text-field
-                                                    v-model="tripForm.deliveryPoint"
+                                                    v-model="tripForm.deliveryAddress"
                                                     box
                                                     :readonly="!edit"
                                                     color="blue-grey lighten-2"
                                                     label="Delivery point"
                                             ></v-text-field>
-
-
                                         </v-flex>
+
                                         <v-flex xs12>
                                             <v-textarea
                                                     v-model="tripForm.info"
                                                     auto-grow
                                                     box
                                                     :readonly="!edit"
-                                                    color="deep-purple"
+                                                    color="blue-grey lighten-3"
                                                     label="Additional information"
                                                     rows="3"
                                             ></v-textarea>
@@ -61,14 +136,14 @@
                                                     v-model="tripForm.price"
                                                     box
                                                     :readonly="!edit"
-                                                    color="blue-grey lighten-2"
+                                                    color="blue-grey lighten-3"
                                                     label="Price"
                                             ></v-text-field>
 
 
                                         </v-flex>
 
-                                        <v-flex>
+                                        <v-flex v-if="edit">
                                             <v-layout row>
                                                 <v-flex>
                                                     <v-menu
@@ -104,8 +179,7 @@
                                             </v-layout>
                                         </v-flex>
 
-
-                                        <v-flex>
+                                        <v-flex v-if="edit">
                                             <v-layout row>
                                                 <v-flex>
                                                     <v-menu
@@ -258,7 +332,7 @@
                                                                 color="yellow lighten-4"
                                                         >
                                                             <img :src="trip.author.avatarUrl"
-                                                                 :alt="trip.author.firstName + ' ' +trip.author.lastName">
+                                                                 :alt="trip.author.firstName + ' ' + trip.author.lastName">
                                                         </v-avatar>
                                                     </v-flex>
                                                 </v-layout>
@@ -364,9 +438,10 @@
                                             </v-card-text>
                                             <v-card-actions>
                                                 <v-spacer></v-spacer>
-                                                <v-btn color="yellow darken-1" dark flat @click="reviewDialog = !reviewDialog">Cancel
+                                                <v-btn color="yellow darken-1" dark flat
+                                                       @click="reviewDialog = !reviewDialog">Cancel
                                                 </v-btn>
-                                                <v-btn color="primary darken-1" dark  @click="sendReview">Review</v-btn>
+                                                <v-btn color="primary darken-1" dark @click="sendReview">Review</v-btn>
                                             </v-card-actions>
                                         </v-form>
                                     </v-card>
@@ -435,11 +510,7 @@
                                 </v-dialog>
                             </v-flex>
                         </v-layout>
-
-
                     </v-flex>
-
-
                 </v-layout>
             </v-container>
         </v-content>
@@ -545,8 +616,8 @@
                     arrivalTime: this.trip.arrivalDate.substring(11, 16),
                     departureDate: this.trip.departureDate.substring(0, 10),
                     departureTime: this.trip.departureDate.substring(11, 16),
-                    departurePoint: this.trip.departurePoint,
-                    deliveryPoint: this.trip.deliveryPoint,
+                    departureAddress: this.trip.departureAddress,
+                    deliveryAddress: this.trip.deliveryAddress,
                     stuffers: this.trip.stuffers,
                     price: this.trip.price
                 }
@@ -619,8 +690,8 @@
                         arrivalTime: this.trip.arrivalDate.substring(11, 16).replace(':', ''),
                         departureDate: this.trip.departureDate.substring(0, 10),
                         departureTime: this.trip.departureDate.substring(11, 16).replace(':', ''),
-                        departurePoint: this.trip.departurePoint,
-                        deliveryPoint: this.trip.deliveryPoint,
+                        departureAddress: this.trip.departureAddress,
+                        deliveryAddress: this.trip.deliveryAddress,
                         stuffers: this.trip.stuffers,
                         price: this.trip.price,
                         status: this.trip.status

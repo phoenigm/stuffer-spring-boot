@@ -6,7 +6,7 @@
             <v-container>
                 <v-layout align-start justify-center row fill-height>
                     <v-flex class="md8 xs12">
-                        <v-card dark>
+                        <v-card dark color="purple">
                             <v-form>
                                 <v-container>
                                     <v-layout column justify-center wrap>
@@ -14,19 +14,87 @@
                                             <span class="display-2 ">Create new trip</span>
                                         </v-flex>
                                         <v-flex>
+                                            <v-layout row>
+                                                <v-flex xs6>
+                                                    <v-autocomplete
+                                                            v-model="departureRegion"
+                                                            :items="departureRegions"
+                                                            :loading="isLoading"
+                                                            :search-input.sync="searchDepartureRegion"
+                                                            color="white"
+                                                            hide-no-data
+                                                            hide-selected
+                                                            label="Departure region"
+                                                            placeholder="Start typing region you start trip"
+                                                            prepend-icon="fas fa-globe-europe"
+                                                            return-object
+                                                    ></v-autocomplete>
+                                                </v-flex>
+                                                <v-flex xs6>
+                                                    <v-autocomplete
+                                                            v-model="departureLocality"
+                                                            :items="departureLocalities"
+                                                            :loading="isLoading1"
+                                                            :search-input.sync="searchDepartureLocality"
+                                                            color="white"
+                                                            hide-no-data
+                                                            hide-selected
+                                                            label="Departure locality"
+                                                            placeholder="Start typing locality"
+                                                            return-object
+                                                    ></v-autocomplete>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-flex>
+                                        <v-flex>
                                             <v-text-field
-                                                    v-model="tripForm.departurePoint"
+                                                    v-model="tripForm.departureAddress"
                                                     box
                                                     color="blue-grey lighten-2"
-                                                    label="Departure point"
+                                                    label="Departure address"
                                             ></v-text-field>
                                         </v-flex>
+
+                                        <v-flex>
+                                            <v-layout row>
+                                                <v-flex xs6>
+                                                    <v-autocomplete
+                                                            v-model="deliveryRegion"
+                                                            :items="deliveryRegions"
+                                                            :loading="isLoading2"
+                                                            :search-input.sync="searchDeliveryRegion"
+                                                            color="white"
+                                                            hide-no-data
+                                                            hide-selected
+                                                            label="Delivery region"
+                                                            placeholder="Start typing region you go"
+                                                            prepend-icon="fas fa-globe-europe"
+                                                            return-object
+                                                    ></v-autocomplete>
+                                                </v-flex>
+                                                <v-flex xs6>
+                                                    <v-autocomplete
+                                                            v-model="deliveryLocality"
+                                                            :items="deliveryLocalities"
+                                                            :loading="isLoading3"
+                                                            :search-input.sync="searchDeliveryLocality"
+                                                            color="white"
+                                                            hide-no-data
+                                                            hide-selected
+                                                            label="Delivery locality"
+                                                            placeholder="Start typing locality"
+                                                            return-object
+                                                    ></v-autocomplete>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-flex>
+
                                         <v-flex xs12>
                                             <v-text-field
-                                                    v-model="tripForm.deliveryPoint"
+                                                    v-model="tripForm.deliveryAddress"
                                                     box
                                                     color="blue-grey lighten-2"
-                                                    label="Delivery point"
+                                                    label="Delivery address"
                                             ></v-text-field>
 
 
@@ -41,7 +109,6 @@
                                                     rows="3"
                                             ></v-textarea>
                                         </v-flex>
-
                                         <v-flex xs12>
 
                                             <v-text-field
@@ -154,7 +221,6 @@
         name: "NewTrip",
         components: {NavigationBar},
         data() {
-
             return {
                 tripForm: {
                     info: null,
@@ -162,10 +228,16 @@
                     arrivalTime: '2359',
                     departureDate: new Date().toISOString().substr(0, 10),
                     departureTime: '2358',
-                    departurePoint: null,
-                    deliveryPoint: null,
+                    departureLocalityId: null,
+                    deliveryLocalityId: null,
+                    departureAddress: null,
+                    deliveryAddress: null,
                     price: null
                 },
+                departureRegion: null,
+                departureLocality: null,
+                deliveryRegion: null,
+                deliveryLocality: null,
 
                 serverErrorMessage: null,
 
@@ -174,26 +246,98 @@
                 modal: false,
                 menu2: false,
 
+                departureLocalityData: [],
+                departureRegionData: [],
+                deliveryLocalityData: [],
+                deliveryRegionData: [],
 
-                autoUpdate: true,
-                friends: ['Sandra Adams', 'Britta Holt'],
-                isUpdating: false,
-                name: 'Midnight Crew',
-                title: 'The summer breeze'
+                searchDepartureRegion: null,
+                searchDepartureLocality: null,
+                searchDeliveryRegion: null,
+                searchDeliveryLocality: null,
+                isLoading: false,
+                isLoading1: false,
+                isLoading2: false,
+                isLoading3: false,
+
+            }
+        },
+        computed: {
+            departureLocalities() {
+                return this.departureLocalityData.map(e => e.name)
+            },
+            departureRegions() {
+                return this.departureRegionData.map(e => e.name)
+            },
+            deliveryLocalities() {
+                return this.deliveryLocalityData.map(e => e.name)
+            },
+            deliveryRegions() {
+                return this.deliveryRegionData.map(e => e.name)
+            },
+            deliveryLocalityId() {
+                const val = this.deliveryLocalityData.find(e => e.name === this.deliveryLocality);
+                return val === null ? -1 : val.id;
+            },
+            departureLocalityId() {
+                const val = this.departureLocalityData.find(e => e.name === this.departureLocality);
+                return val === null ? -1 : val.id;
             }
         },
         watch: {
-            isUpdating(val) {
-                if (val) {
-                    setTimeout(() => (this.isUpdating = false), 3000)
-                }
-            }
+            searchDeliveryLocality(val) {
+                if (this.isLoading3) return;
+                this.isLoading3 = true;
+
+                AXIOS.get(`/api/trip/localities?q=${val}&region=${this.deliveryRegion}`)
+                    .then(res => {
+                        this.deliveryLocalityData = res.data;
+                    })
+                    .catch(err => {
+                    })
+                    .finally(() => (this.isLoading3 = false))
+            },
+
+            searchDeliveryRegion(val) {
+                if (this.isLoading2) return;
+                this.isLoading2 = true;
+
+                AXIOS.get('/api/trip/regions?q=' + val)
+                    .then(res => {
+                        this.deliveryRegionData = res.data;
+                    })
+                    .catch(err => {
+                    })
+                    .finally(() => (this.isLoading2 = false))
+            },
+
+            searchDepartureLocality(val) {
+                if (this.isLoading1) return;
+                this.isLoading1 = true;
+
+                AXIOS.get(`/api/trip/localities?q=${val}&region=${this.departureRegion}`)
+                    .then(res => {
+                        this.departureLocalityData = res.data;
+                    })
+                    .catch(err => {
+                    })
+                    .finally(() => (this.isLoading1 = false))
+            },
+
+            searchDepartureRegion(val) {
+                if (this.isLoading) return;
+                this.isLoading = true;
+
+                AXIOS.get('/api/trip/regions?q=' + val)
+                    .then(res => {
+                        this.departureRegionData = res.data;
+                    })
+                    .catch(err => {
+                    })
+                    .finally(() => (this.isLoading = false))
+            },
         },
         methods: {
-            remove(item) {
-                const index = this.friends.indexOf(item.name);
-                if (index >= 0) this.friends.splice(index, 1)
-            },
 
             createTrip() {
                 const form = {
@@ -204,8 +348,10 @@
                     departureDate: this.tripForm.departureDate
                         + ' ' + this.tripForm.departureTime.substr(0, 2)
                         + ':' + this.tripForm.departureTime.substr(2, 4),
-                    departurePoint: this.tripForm.departurePoint,
-                    deliveryPoint: this.tripForm.deliveryPoint,
+                    departureLocalityId: this.departureLocalityId,
+                    deliveryLocalityId: this.deliveryLocalityId,
+                    departureAddress: this.tripForm.departureAddress,
+                    deliveryAddress: this.tripForm.deliveryAddress,
                     price: this.tripForm.price
                 };
                 AXIOS.post('/api/trip', form)
@@ -214,7 +360,6 @@
                         console.log(response.data);
                         this.$router.push('/trip/' + trip.id);
                     }).catch(error => {
-                    console.log(error)
                 })
 
             },
