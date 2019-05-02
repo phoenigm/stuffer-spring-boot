@@ -80,4 +80,11 @@ public class TripController {
     public List<Region> searchRegion(@RequestParam("q") String query) {
         return localityService.searchRegion(query);
     }
+
+
+    @GetMapping("/search")
+    public List<Trip> searchTrip(@RequestParam(value = "from", required = false) String from,
+                                 @RequestParam(value= "to", required = false) String to) {
+        return tripService.searchTrips(from, to);
+    }
 }
