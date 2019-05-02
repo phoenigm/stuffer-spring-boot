@@ -50,7 +50,6 @@
                         </v-layout>
                     </v-tab-item>
                 </v-tabs>
-
             </v-container>
         </v-content>
     </v-app>
@@ -69,7 +68,6 @@
         data() {
             return {
                 tab: null,
-                trips: this.$store.getters.getMyTrips,
                 joinedTrips: null,
                 requests: null,
                 myRequests: null,
@@ -91,43 +89,21 @@
             }
         },
 
-       /* computed: {
+        computed: {
             trips() {
                 return this.$store.getters.getMyTrips;
             }
-        },*/
+        },
 
         beforeMount() {
             this.$store.dispatch('loadMyTrips')
         },
 
-        mounted() {
-
-            AXIOS.get('/api/trip/joined')
-                .then(response => {
-                    console.log(response.data);
-                    this.joinedTrips = response.data;
-                }).catch(error => {
-                console.log(error);
-            });
-
-            AXIOS.get('/api/request/toMe')
-                .then(response => {
-                    console.log(response.data)
-                    this.requests = response.data;
-                }).catch(error => {
-                console.log(error);
-            });
-
-            AXIOS.get('/api/request/my')
-                .then(response => {
-                    console.log(response.data)
-                    this.myRequests = response.data;
-                }).catch(error => {
-                console.log(error);
-            })
+        async mounted() {
+            this.joinedTrips = await AXIOS.get('/api/trip/joined');
+            this.requests = await AXIOS.get('/api/request/toMe');
+            this.myRequests = await AXIOS.get('/api/request/my');
         }
-
     }
 </script>
 
