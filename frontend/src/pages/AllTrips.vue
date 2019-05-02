@@ -11,12 +11,8 @@
                                     v-on:input="searchDepartureLocality"
                                     v-model="departureLocality"
                                     :loading="isLoading1"
-
-                                    hide-no-data
-                                    hide-selected
                                     label="Departure locality"
                                     placeholder="Start typing locality"
-                                    return-object
                             ></v-text-field>
                         </v-flex>
                         <v-flex xs6>
@@ -24,11 +20,8 @@
                                     v-on:input="searchDeliveryLocality"
                                     v-model="deliveryLocality"
                                     :loading="isLoading3"
-                                    hide-no-data
-                                    hide-selected
                                     label="Delivery locality"
                                     placeholder="Start typing locality"
-                                    return-object
                             ></v-text-field>
                         </v-flex>
                     </v-layout>
