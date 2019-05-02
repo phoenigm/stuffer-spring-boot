@@ -5,11 +5,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import ru.phoenigm.stuffer.domain.Trip;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
-    List<Trip> findAllByDepartureDate(LocalDateTime departureDate);
+    List<Trip> findAllByDepartureLocalityNameIgnoreCaseContainingAndDeliveryLocalityNameIgnoreCaseContaining(String from, String to);
+
+    List<Trip> findAllByDepartureLocalityNameIgnoreCaseContaining(String from);
+
+    List<Trip> findAllByDeliveryLocalityNameIgnoreCaseContaining(String to);
 
     List<Trip> findAllByAuthorEmail(String email);
 
