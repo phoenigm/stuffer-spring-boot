@@ -28,6 +28,8 @@
                                                             placeholder="Start typing region you start trip"
                                                             prepend-icon="fas fa-globe-europe"
                                                             return-object
+                                                            dense
+                                                            no-data-text="Such region not found"
                                                     ></v-autocomplete>
                                                 </v-flex>
                                                 <v-flex xs6>
@@ -37,11 +39,12 @@
                                                             :loading="isLoading1"
                                                             :search-input.sync="searchDepartureLocality"
                                                             color="white"
-                                                            hide-no-data
                                                             hide-selected
                                                             label="Departure locality"
                                                             placeholder="Start typing locality"
                                                             return-object
+                                                            dense
+                                                            no-data-text="Such locality not found"
                                                     ></v-autocomplete>
                                                 </v-flex>
                                             </v-layout>
@@ -70,6 +73,8 @@
                                                             placeholder="Start typing region you go"
                                                             prepend-icon="fas fa-globe-europe"
                                                             return-object
+                                                            dense
+                                                            no-data-text="Such region not found"
                                                     ></v-autocomplete>
                                                 </v-flex>
                                                 <v-flex xs6>
@@ -84,6 +89,8 @@
                                                             label="Delivery locality"
                                                             placeholder="Start typing locality"
                                                             return-object
+                                                            dense
+                                                            no-data-text="Such locality not found"
                                                     ></v-autocomplete>
                                                 </v-flex>
                                             </v-layout>
@@ -104,7 +111,7 @@
                                                     v-model="tripForm.info"
                                                     auto-grow
                                                     box
-                                                    color="deep-purple"
+                                                    color="blue-grey lighten-2"
                                                     label="Additional information"
                                                     rows="3"
                                             ></v-textarea>
