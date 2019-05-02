@@ -156,7 +156,7 @@
                 items: [
                     {heading: 'Activity'},
                     {icon: 'fas fa-car', text: 'My trips', page: '/trips'},
-                    {icon: 'fas fa-suitcase', text: 'All trips', page: '/catalogue'},
+                    {icon: 'fas fa-suitcase', text: 'Search', page: '/catalogue'},
                     {icon: 'fas fa-plus', text: 'Add new trip', page: '/new'},
                     {divider: true},
                     {icon: 'fas fa-cog', text: 'Settings', page: '/settings'},
