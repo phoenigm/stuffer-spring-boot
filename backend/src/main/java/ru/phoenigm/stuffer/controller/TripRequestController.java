@@ -8,36 +8,38 @@ import ru.phoenigm.stuffer.domain.form.TripRequestConfirmation;
 import ru.phoenigm.stuffer.domain.form.TripRequestForm;
 import ru.phoenigm.stuffer.service.TripRequestService;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/request")
+@RequestMapping("/api/requests")
 public class TripRequestController {
     @Autowired
     private TripRequestService requestService;
 
-    @GetMapping("/toMe")
-    public List<TripRequest> tripRequestsForMe() {
-        return requestService.getTripRequestsForMe();
+    @GetMapping
+    public List<TripRequest> tripRequests(@RequestParam("filter") String filter) {
+        if ("my".equals(filter)) {
+            return requestService.getMyTripRequests();
+        } else if ("toMe".equals(filter)) {
+            return requestService.getTripRequestsForMe();
+        } else {
+            return Collections.emptyList();
+        }
     }
 
-    @GetMapping("/my")
-    public List<TripRequest> myTripRequests() {
-        return requestService.getMyTripRequests();
-    }
-
-    @PostMapping("/send")
+    @PostMapping
     public TripRequest sendTripRequest(@RequestBody TripRequestForm request) {
         return requestService.sendTripRequest(request);
     }
 
-    @PostMapping("/cancel")
-    public ResponseEntity<?> sendTripRequest(@RequestParam("tripId") Long tripId) {
+    @PatchMapping
+    public ResponseEntity<?> cancelTripRequest(@RequestParam("tripId") Long tripId) {
         requestService.cancelTripRequest(tripId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/process")
+    @PutMapping
     public ResponseEntity processTripRequest(@RequestBody TripRequestConfirmation confirmation) {
         requestService.processTripRequest(confirmation);
         return ResponseEntity.ok().build();
