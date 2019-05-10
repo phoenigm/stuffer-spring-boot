@@ -71,7 +71,7 @@
                 if (this.isLoading3) return;
                 this.isLoading3 = true;
 
-                AXIOS.get(`/api/trip/search?${this.departureLocality === null ? '' : 'from=' + this.departureLocality + '&'}to=${this.deliveryLocality}`)
+                AXIOS.get(`/api/trips?type=search&${this.departureLocality === null ? '' : 'from=' + this.departureLocality + '&'}to=${this.deliveryLocality}`)
                     .then(res => {
                         this.searchResults = res.data;
                     })
@@ -84,7 +84,7 @@
                 if (this.isLoading1) return;
                 this.isLoading1 = true;
 
-                AXIOS.get(`/api/trip/search?from=${this.departureLocality}${this.deliveryLocality === null ? '' : '&to=' + this.deliveryLocality}`)
+                AXIOS.get(`/api/trips?type=search&from=${this.departureLocality}${this.deliveryLocality === null ? '' : '&to=' + this.deliveryLocality}`)
                     .then(res => {
                         this.searchResults = res.data;
                     })

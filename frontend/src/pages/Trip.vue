@@ -633,7 +633,7 @@
                     + ' ' + this.tripForm.departureTime.substr(0, 2)
                     + ':' + this.tripForm.departureTime.substr(2, 4);
 
-                AXIOS.put('/api/trip/' + this.$route.params.tripId, tripForm)
+                AXIOS.put('/api/trips/' + this.$route.params.tripId, tripForm)
                     .then(response => {
                         console.log('upd:');
                         console.log(response.data);
@@ -679,7 +679,7 @@
         },
 
         async beforeMount() {
-            await AXIOS.get('/api/trip/' + this.$route.params.tripId)
+            await AXIOS.get('/api/trips/' + this.$route.params.tripId)
                 .then(response => {
                     console.log(response.data);
                     this.stuffers = response.data.stuffers;

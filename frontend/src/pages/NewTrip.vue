@@ -296,7 +296,7 @@
                 if (this.isLoading3) return;
                 this.isLoading3 = true;
 
-                AXIOS.get(`/api/trip/localities?q=${val}&region=${this.deliveryRegion}`)
+                AXIOS.get(`/api/localities?q=${val}&region=${this.deliveryRegion}`)
                     .then(res => {
                         this.deliveryLocalityData = res.data;
                     })
@@ -309,7 +309,7 @@
                 if (this.isLoading2) return;
                 this.isLoading2 = true;
 
-                AXIOS.get('/api/trip/regions?q=' + val)
+                AXIOS.get('/api/regions?q=' + val)
                     .then(res => {
                         this.deliveryRegionData = res.data;
                     })
@@ -322,7 +322,7 @@
                 if (this.isLoading1) return;
                 this.isLoading1 = true;
 
-                AXIOS.get(`/api/trip/localities?q=${val}&region=${this.departureRegion}`)
+                AXIOS.get(`/api/localities?q=${val}&region=${this.departureRegion}`)
                     .then(res => {
                         this.departureLocalityData = res.data;
                     })
@@ -335,7 +335,7 @@
                 if (this.isLoading) return;
                 this.isLoading = true;
 
-                AXIOS.get('/api/trip/regions?q=' + val)
+                AXIOS.get('/api/regions?q=' + val)
                     .then(res => {
                         this.departureRegionData = res.data;
                     })
@@ -361,7 +361,7 @@
                     deliveryAddress: this.tripForm.deliveryAddress,
                     price: this.tripForm.price
                 };
-                AXIOS.post('/api/trip', form)
+                AXIOS.post('/api/trips', form)
                     .then(response => {
                         const trip = response.data;
                         console.log(response.data);

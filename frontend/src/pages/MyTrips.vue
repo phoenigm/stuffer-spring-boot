@@ -100,7 +100,7 @@
         },
 
         async mounted() {
-            this.joinedTrips = await AXIOS.get('/api/trip/joined');
+            this.joinedTrips = await AXIOS.get('/api/trips?type=joined');
             this.requests = await AXIOS.get('/api/request/toMe');
             this.myRequests = await AXIOS.get('/api/request/my');
         }
