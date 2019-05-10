@@ -647,7 +647,7 @@
             sendTripRequest() {
                 this.request = false;
                 this.requestForm.tripId = this.trip.id;
-                AXIOS.post('/api/request/send', this.requestForm)
+                AXIOS.post('/api/requests', this.requestForm)
                     .then(response => {
                         console.log(response)
                     }).catch(error => {
@@ -659,7 +659,7 @@
                 const data = new FormData();
                 data.set('tripId', this.trip.id);
 
-                AXIOS.post('/api/request/cancel', data)
+                AXIOS.patch('/api/requests', data)
                     .then(response => {
                         console.log(response);
                     }).catch(error => {

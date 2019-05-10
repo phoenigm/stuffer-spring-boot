@@ -64,7 +64,7 @@ let store = new Vuex.Store({
             commit('setUser', response.data);
         },
         loadMyTrips: async ({commit}) => {
-            const response = await AXIOS.get('/api/trip/my');
+            const response = await AXIOS.get('/api/trips?type=my');
             if (response.status === 200) {
                 commit('setMyTrips', response.data);
             }
@@ -77,7 +77,7 @@ let store = new Vuex.Store({
             commit('changeAvatarUrl', response.data.url);
         },
         loadTrips: async ({commit}) => {
-            const response = await AXIOS.get('/api/trip/all');
+            const response = await AXIOS.get('/api/trips?type=all');
             commit('setTrips', response.data)
         },
     }

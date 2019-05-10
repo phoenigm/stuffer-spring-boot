@@ -80,7 +80,7 @@
                     status: id,
                     tripRequestId: status
                 };
-                AXIOS.post('/api/request/process', requestConfirmation)
+                AXIOS.put('/api/requests', requestConfirmation)
                     .then(response => {
 
                     }).catch(error => {
@@ -101,8 +101,8 @@
 
         async mounted() {
             this.joinedTrips = await AXIOS.get('/api/trips?type=joined');
-            this.requests = await AXIOS.get('/api/request/toMe');
-            this.myRequests = await AXIOS.get('/api/request/my');
+            this.requests = await AXIOS.get('/api/requests?filter=toMe');
+            this.myRequests = await AXIOS.get('/api/requests?filter=my');
         }
     }
 </script>
