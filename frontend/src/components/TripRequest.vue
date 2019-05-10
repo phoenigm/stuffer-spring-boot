@@ -65,7 +65,7 @@
                     status: status,
                     tripRequestId: id
                 };
-                AXIOS.post('/api/request/process', this.requestConfirmation)
+                AXIOS.put('/api/requests', this.requestConfirmation)
                     .then(response => {
 
                     }).catch(error => {
